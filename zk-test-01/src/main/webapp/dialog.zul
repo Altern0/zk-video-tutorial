@@ -1,0 +1,71 @@
+<?page title="Person" contentType="text/html;charset=UTF-8"?>
+<zk>
+ 
+  <window id="windowPerson" xmlns:w="client" apply="org.test.zk.dialog.CDialogController" title="Person" border="normal" hflex="min">
+    
+    <vlayout width="287px">
+     
+      <grid  hflex="min">
+  
+        <rows>
+ 
+          <row>
+            <label id="labelId" value="Id:" width="150px" />
+            
+            <textbox id="textboxId" value="" width="100px" tabindex="1">
+            
+              <attribute w:name="doKeyPress_">
+              
+                <![CDATA[
+                  function(evt){
+					if (!this._shallIgnore(evt, "0123456789"))
+					    this.$doKeyPress_(evt);
+                  }
+                ]]>
+              
+              </attribute>
+                        
+            </textbox>
+             
+          </row>
+      
+          <row>
+            <label id="labelFirstName" value="First Name:" width="150px" />
+            <textbox id="textboxFirstName" value="" width="150px" tabindex="2" />
+          </row>
+        
+          <row>
+            <label id="labelLastName" value="Last Name:" width="150px" />
+            <textbox id="textboxLastName" value="" width="150px" tabindex="3" />
+          </row>
+      
+          <row>
+            <label id="labelBirthday" value="Birthday:" width="150px" />
+            <datebox id="dateboxBirthday" format="dd/MM/yyyy" width="150px"  tabindex="4"/>
+          </row>
+        
+          <row>
+            <label id="labelGender" value="Gender:" width="150px" />
+            <selectbox id="selectboxGender"  tabindex="5"/>
+          </row>
+      
+         <row>
+            <label id="labeComent" value="Coment:" width="150px" />
+            <textbox id="textboxIdComent " value="" width="200px" tabindex="4" rows="6"/>
+          </row>
+   
+        </rows>
+ 
+      </grid>
+      
+      <div id="divButtonContainer">
+        
+        <button id="buttonCancel" label="Cancel" style="float:right; margin-left:5px;"/>
+        <button id="buttonAccept" label="Accept"  style="float:right; margin-left:5px;"/>
+           
+      </div>
+      
+    </vlayout>
+  </window>
+
+</zk>
