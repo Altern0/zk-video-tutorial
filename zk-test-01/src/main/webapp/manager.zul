@@ -6,20 +6,17 @@
     <vlayout width="287px">
     
     <listbox id="lisbboxPesons" width="100%" height="350px">
-    
-    
+       
     
     </listbox>
-    
-        
+            
      <div id="divButtonContainer">
         
         <button id="buttonAdd" label="Agregar" style="float:right; margin-left:5px;"/>
         <button id="buttonModify" label="Modificar"  style="float:right; margin-left:5px;"/>
         <button id="buttonDelete" label="Borrar"  style="float:right; margin-left:5px;"/>   
       </div>
-    
-    
+        
     </vlayout>
     
   </window>
