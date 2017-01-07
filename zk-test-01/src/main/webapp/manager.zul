@@ -3,18 +3,25 @@
  
   <window xmlns:w="client" position="center, center" apply="org.test.zk.manager.CManagerController" title="Person Manager" border="normal" hflex="min">
     
-    <vlayout width="287px">
+    <vlayout width="543px">
     
-    <listbox id="lisbboxPesons" width="100%" height="350px">
+    <listbox id="listboxPersons" width="100%" height="300px">
+     
+      <listhead sizable="true">
+        <listheader label="Id" />
+        <listheader label="Firs Name"/>
+        <listheader label="Second Name"/>
+      </listhead>
        
-    
+     
     </listbox>
             
      <div id="divButtonContainer">
-        
-        <button id="buttonAdd" label="Agregar" style="float:right; margin-left:5px;"/>
+     
+        <button id="buttonDelete" label="Borrar"  style="float:right; margin-left:5px;"/>  
         <button id="buttonModify" label="Modificar"  style="float:right; margin-left:5px;"/>
-        <button id="buttonDelete" label="Borrar"  style="float:right; margin-left:5px;"/>   
+        <button id="buttonAdd" label="Agregar" style="float:right; margin-left:5px;"/>
+              
       </div>
         
     </vlayout>
