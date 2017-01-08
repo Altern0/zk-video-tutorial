@@ -1,5 +1,7 @@
 package org.test.zk;
 
+import java.time.LocalDate;
+
 import org.test.zk.dao.CPerson;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
@@ -50,10 +52,10 @@ public class Ctest01Controller extends SelectorComposer<Component> implements It
         dataModel.add( "3" );
         dataModel.add( "4" );
         dataModel.add( "5" );
-        
-        dataModelPerson.add( new CPerson ( "12674936", "Al", " Perez") );
-        dataModelPerson.add( new CPerson ( "16082546", "Yle", " Prieto") );
-        dataModelPerson.add( new CPerson ( "00000000", "Nico", " Perez") );
+  
+        dataModelPerson.add( new CPerson ( "12674936", "Al", " Perez",1,LocalDate.parse("1978-24-09"),"Papa") );
+        dataModelPerson.add( new CPerson ( "16082546", "Yle", " Prieto",0,LocalDate.parse("1982-03-11"),"Mama") );
+        dataModelPerson.add( new CPerson ( "00000000", "Nico", " Perez",1,LocalDate.parse("2013-28-10"),"Hijo") );
         
         selectbox02.setModel( dataModelPerson );
         selectbox02.setItemRenderer( this );

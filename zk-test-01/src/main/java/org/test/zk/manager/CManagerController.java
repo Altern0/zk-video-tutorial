@@ -1,8 +1,9 @@
 package org.test.zk.manager;
 
-import java.util.Iterator;
+import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
-
 import org.test.zk.dao.CPerson;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -44,6 +45,18 @@ public class CManagerController extends SelectorComposer<Component> {
             cell.setLabel( person.getLastName() );
             listitem.appendChild(cell);
                         
+            cell = new Listcell();
+            cell.setLabel( person.getGender() == 0  ? "Famele" : "Male" );
+            listitem.appendChild(cell);
+                        
+            cell = new Listcell();
+            cell.setLabel( person.getBirthDate().toString() );
+            listitem.appendChild(cell);
+                        
+            cell = new Listcell();
+            cell.setLabel( person.getComment() );
+            listitem.appendChild(cell);
+                        
         }
         catch ( Exception e ) {
             
@@ -65,13 +78,13 @@ public class CManagerController extends SelectorComposer<Component> {
            
            super.doAfterCompose( comp );
            
-           CPerson person01 = new CPerson ("111","Al","Perez");
-           CPerson person02 = new CPerson ("222","Yle","Prieto");
-           CPerson person03 = new CPerson ("333","Nico","Perez Prieto");
-           CPerson person04 = new CPerson ("444","aaa","AAA");
-           CPerson person05 = new CPerson ("555","bbb","BBB");
-           CPerson person06 = new CPerson ("666","ccc","CCC");
-           CPerson person07 = new CPerson ("777","ddd","DDD");
+           CPerson person01 = new CPerson ("111","Al","Perez",1,LocalDate.parse("1978-09-24"),"Papa");
+           CPerson person02 = new CPerson ("222","Yle","Prieto",0,LocalDate.parse("1982-11-03"),"Mama");
+           CPerson person03 = new CPerson ("333","Nico","Perez Prieto",1,LocalDate.parse("2013-10-28"),"Hijo");
+           CPerson person04 = new CPerson ("444","aaa","AAA",1,LocalDate.parse("2004-04-04"),"444");
+           CPerson person05 = new CPerson ("555","bbb","BBB",1,LocalDate.parse("2005-05-05"),"555");
+           CPerson person06 = new CPerson ("666","ccc","CCC",0,LocalDate.parse("2006-06-06"),"666");
+           CPerson person07 = new CPerson ("777","ddd","DDD",0,LocalDate.parse("2007-07-07"),"777");
            
            dataModel.add( person01 );
            dataModel.add( person02 );
@@ -106,8 +119,29 @@ public class CManagerController extends SelectorComposer<Component> {
    
    @Listen( "onClick=#buttonModify")
    public void onClickbuttonModify ( Event event ){
+     
+     Set<CPerson> selectedItems = dataModel.getSelection();
+        
+     if (selectedItems != null && selectedItems.size() > 0) {
+     
+       CPerson person = selectedItems.iterator().next();
+       
+    
+       Map<String,Object> args = new HashMap<String,Object>();
+       
+       args.put( "personToModify", person );
+       Window win = ( Window ) Executions.createComponents("/dialog.zul", null, args);
+          
+       win.doModal();
       
-   
+     
+     }
+     else{
+                    
+       Messagebox.show( "No hay Seleccion " );
+     
+     }   
+         
    }
 
    @SuppressWarnings( { "rawtypes", "unchecked" } )
