@@ -13,6 +13,7 @@ import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.ListModel;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
@@ -135,13 +136,14 @@ public class CManagerController extends SelectorComposer<Component> {
         
      if (selectedItems != null && selectedItems.size() > 0) {
      
-       CPerson person = selectedItems.iterator().next();
+       CPerson person = selectedItems.iterator().next(); // se crea la referencia del CPerson Seleccionado no se crea uno nuevo
        
     
-       Map<String,Object> args = new HashMap<String,Object>();
+       Map<String,Object> params = new HashMap<String,Object>();
        
-       args.put( "personToModify", person );
-       Window win = ( Window ) Executions.createComponents("/dialog.zul", null, args);
+       params.put( "personToModify", person ); // se pasa la referencia del CPerson seleccionada
+       params.put( "callerComponent", buttonModify ); // se pasa el componente en este caso el botun donde se va a ejecutar
+       Window win = ( Window ) Executions.createComponents("/dialog.zul", null, params);
           
        win.doModal();
       
@@ -209,22 +211,35 @@ public class CManagerController extends SelectorComposer<Component> {
        
        //Este evento recibe los controladores de Dialog.zul 
              
-      System.out.println( "evento recibido" );
+          System.out.println( "evento recibido Add" );
       
       if (event.getData() != null ){
           
         CPerson person = (CPerson) event.getData(); // typecast
          
-         System.out.println( person.getID() );
-         System.out.println( person.getFirtsName() );
-         System.out.println( person.getLastName());
-         System.out.println( ( person.getGender() == 0 ? "Femenino" : "Masculino" ) );
-         System.out.println(  person.getBirthDate() );
-         System.out.println(  person.getComment() );
+        dataModel.add( person ); 
          
       }
       
    }
    
+   @Listen( "onDialogFinished=#buttonModify" )
+   public void onDialogFinishedbuttonModify ( Event event ) {
    
+   //Este evento recibe los controladores de Dialog.zul 
+   System.out.println( "evento recibido Modify" );
+   
+   if (event.getData() != null ){
+       
+     @SuppressWarnings( "unused" )
+    CPerson person = (CPerson) event.getData(); // typecast
+        
+   }
+   //  Refrescar el ListBox
+   listboxPersons.setModel( (ListModelList <?>) null ); // se hace null el setodel 
+   listboxPersons.setModel( dataModel ); // se asina denuevo el setModel
+   
+}
+   
+
 }
