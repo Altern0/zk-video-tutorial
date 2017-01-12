@@ -6,6 +6,7 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
@@ -15,15 +16,19 @@ import org.zkoss.zul.Selectbox;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
-import net.sf.jasperreports.engine.util.Java14BigDecimalHandler;
-
 
 public class CDialogController extends SelectorComposer<Component> {
    
     private static final long serialVersionUID = -8977563222707532143L;
     
     protected ListModelList<String> dataModel = new ListModelList<String>(); 
-
+    
+    protected Component callerComponent = null; // Variave de clase 
+    
+    protected CPerson personToModify = null;
+    
+    protected CPerson personToAdd = null; 
+    
     @Wire
     Window windowPerson;
     
@@ -61,7 +66,7 @@ public class CDialogController extends SelectorComposer<Component> {
     Label labeComent;
     
     @Wire
-    Textbox textboxIdComent;  
+    Textbox textboxComment;  
         
     @Override
     public void doAfterCompose( Component comp ) {
@@ -80,18 +85,21 @@ public class CDialogController extends SelectorComposer<Component> {
             dataModel.addToSelection( "Femenino" );
             
             final Execution execution = Executions.getCurrent();
-                    
-            CPerson personToModify = (CPerson) execution.getArg().get( "personToModify" );
+            personToModify = (CPerson) execution.getArg().get( "personToModify" ); // recibimos la person
             
-            textboxId.setValue( personToModify.getID() );
-            textboxFirstName.setValue( personToModify.getFirtsName() );
-            textboxLastName.setValue( personToModify.getLastName() );
-            dataModel.addToSelection( (personToModify.getGender() == 0 ? "Femenino" : "Masculino" ) );
-            selectboxGender.setSelectedIndex( personToModify.getGender() );
-            dateboxBirthday.setValue( java.sql.Date.valueOf( personToModify.getBirthDate() ) );
-            textboxIdComent.setValue( personToModify.getComment() );
-
+         // cuando se crea una nueva persona no es necesario personToModify
+            if ( personToModify != null ) {
+                textboxId.setValue( personToModify.getID() );
+                textboxFirstName.setValue( personToModify.getFirtsName() );
+                textboxLastName.setValue( personToModify.getLastName() );
+                dataModel.addToSelection( ( personToModify.getGender() == 0 ? "Femenino" : "Masculino" ) );
+                selectboxGender.setSelectedIndex( personToModify.getGender() );
+                dateboxBirthday.setValue( java.sql.Date.valueOf( personToModify.getBirthDate() ) );
+                textboxComment.setValue( personToModify.getComment() );
+            }      
             
+            // debemos guardar la referencia al componente que nos envia el controlador  del manager.zul
+            callerComponent = (Component) execution.getArg().get( "callerComponent" ); 
                  
         }
         catch ( Exception e ) {
@@ -100,25 +108,48 @@ public class CDialogController extends SelectorComposer<Component> {
             
         }
      }
-
-    
     
     @Listen( "onClick=#buttonAccept")
     public void onClickbuttonAcept ( Event event ){
-       
-       // Messagebox.show("Id=" + textboxId.getValue() + " First Name " + textboxFirstName.getValue() , "Aceptar", Messagebox.OK, Messagebox.INFORMATION);
-       // System.out.println( "Hola Aceptar" );
- 
+
         windowPerson.detach();
+        
+        if ( personToModify != null ) {
+            personToModify.setID( textboxId.getValue());
+            personToModify.setFirtsName(textboxFirstName.getValue());
+            personToModify.setLastName(textboxLastName.getValue());
+            personToModify.setGender(selectboxGender.getSelectedIndex());
+            personToModify.setBirthDate( new java.sql.Date(dateboxBirthday.getValue().getTime()).toLocalDate() );
+            personToModify.setComment(textboxComment.getValue());
+
+            
+            // lanzamos el evento retornamos la persona a modificar
+            Events.echoEvent( new Event( "onDialogFinished", callerComponent, personToModify ) );
+                    
+        } 
+        else {
+            
+            personToAdd = new CPerson();
+            
+            personToAdd.setID( textboxId.getValue());
+            personToAdd.setFirtsName(textboxFirstName.getValue());
+            personToAdd.setLastName(textboxLastName.getValue());
+            personToAdd.setGender(selectboxGender.getSelectedIndex());
+            personToAdd.setBirthDate( new java.sql.Date(dateboxBirthday.getValue().getTime()).toLocalDate() );
+            personToAdd.setComment(textboxComment.getValue());
+            
+            Events.echoEvent( new Event( "onDialogFinished", callerComponent, personToAdd ) );
+            
+        }
+        
+        
         
     }
     
     @Listen( "onClick=#buttonCancel")
     public void onClickbuttonCancel( Event event ){
  
-       // Messagebox.show("Cancelar", "Cancelar", Messagebox.OK, Messagebox.EXCLAMATION);
-       // System.out.println( "Hola Cancelar" );
-    
+      
         windowPerson.detach();
     }
 }

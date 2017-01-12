@@ -51,7 +51,7 @@
       
          <row>
             <label id="labeComent" value="Coment:" width="150px" />
-            <textbox id="textboxIdComent " value="" width="200px" tabindex="4" rows="6"/>
+            <textbox id="textboxComment" value="" width="200px" tabindex="4" rows="6"/>
           </row>
    
         </rows>

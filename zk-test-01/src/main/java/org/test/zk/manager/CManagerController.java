@@ -1,5 +1,6 @@
 package org.test.zk.manager;
 
+
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,6 +12,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
@@ -71,6 +73,12 @@ public class CManagerController extends SelectorComposer<Component> {
    @Wire
    Listbox listboxPersons;
    
+   @Wire
+   Button buttonAdd;
+   
+   @Wire
+   Button buttonModify;
+  
    @Override
    public void doAfterCompose( Component comp ) {
        
@@ -109,9 +117,12 @@ public class CManagerController extends SelectorComposer<Component> {
    @Listen( "onClick=#buttonAdd")
    public void onClickbuttonAdd ( Event event ){
       
-    //   Map arg = new HashMap();
-    //   arg.put("someName", someValue);
-       Window win = ( Window ) Executions.createComponents("/dialog.zul", null, null);
+       // paso de parametros a la ventana dialog
+       
+       Map<String,Object> params = new HashMap<String,Object>();
+       params.put( "callerComponent", buttonAdd );
+       
+       Window win = ( Window ) Executions.createComponents("/dialog.zul", null, params);
        
        win.doModal();
    
@@ -145,7 +156,7 @@ public class CManagerController extends SelectorComposer<Component> {
    }
 
    @SuppressWarnings( { "rawtypes", "unchecked" } )
-@Listen( "onClick=#buttonDelete")
+   @Listen( "onClick=#buttonDelete")
    public void onClickbuttonDelete ( Event event ){
   
      Set<CPerson> selectedItems = dataModel.getSelection();
@@ -191,5 +202,29 @@ public class CManagerController extends SelectorComposer<Component> {
            Messagebox.show( "No hay Seleccion " );
      }   
    }
+   
+   
+@Listen( "onDialogFinished=#buttonAdd" )
+   public void onDialogFinishedbuttonAdd ( Event event) {
+       
+       //Este evento recibe los controladores de Dialog.zul 
+             
+      System.out.println( "evento recibido" );
+      
+      if (event.getData() != null ){
+          
+        CPerson person = (CPerson) event.getData(); // typecast
+         
+         System.out.println( person.getID() );
+         System.out.println( person.getFirtsName() );
+         System.out.println( person.getLastName());
+         System.out.println( ( person.getGender() == 0 ? "Femenino" : "Masculino" ) );
+         System.out.println(  person.getBirthDate() );
+         System.out.println(  person.getComment() );
+         
+      }
+      
+   }
+   
    
 }

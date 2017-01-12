@@ -25,6 +25,10 @@ public class CPerson implements Serializable  {
         
     }
     
+    public CPerson () {
+        
+    }
+    
     
     //Geter an Seter
     public String getID() {
