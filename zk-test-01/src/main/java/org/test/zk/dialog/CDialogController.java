@@ -1,6 +1,6 @@
 package org.test.zk.dialog;
 
-import org.test.zk.datamodel.CPerson;
+import org.test.zk.datamodel.TBLPerson;
 import org.zkoss.zhtml.Label;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Execution;
@@ -25,9 +25,9 @@ public class CDialogController extends SelectorComposer<Component> {
     
     protected Component callerComponent = null; // Variave de clase 
     
-    protected CPerson personToModify = null;
+    protected TBLPerson personToModify = null;
     
-    protected CPerson personToAdd = null; 
+    protected TBLPerson personToAdd = null; 
     
     @Wire
     Window windowPerson;
@@ -85,7 +85,7 @@ public class CDialogController extends SelectorComposer<Component> {
             dataModel.addToSelection( "Femenino" );
             
             final Execution execution = Executions.getCurrent();
-            personToModify = (CPerson) execution.getArg().get( "personToModify" ); // recibimos la person
+            personToModify = (TBLPerson) execution.getArg().get( "personToModify" ); // recibimos la person
             
          // cuando se crea una nueva persona no es necesario personToModify
             if ( personToModify != null ) {
@@ -129,7 +129,7 @@ public class CDialogController extends SelectorComposer<Component> {
         } 
         else {
             
-            personToAdd = new CPerson();
+            personToAdd = new TBLPerson();
             
             personToAdd.setID( textboxId.getValue());
             personToAdd.setFirtsName(textboxFirstName.getValue());

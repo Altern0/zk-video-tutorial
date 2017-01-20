@@ -7,9 +7,11 @@ import java.util.Map;
 import java.util.Set;
 
 import org.test.zk.database.CDatabaseConnection;
-import org.test.zk.datamodel.CPerson;
+import org.test.zk.datamodel.TBLPerson;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.Session;
+import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.Listen;
@@ -28,12 +30,14 @@ public class CManagerController extends SelectorComposer<Component> {
     
     private static final long serialVersionUID = -1591648938821366036L;
     
-    protected ListModelList<CPerson> dataModel = new ListModelList<CPerson>();
+    protected ListModelList<TBLPerson> dataModel = new ListModelList<TBLPerson>();
     
-    public class rendererHelper implements ListitemRenderer<CPerson>{
+    public static final String _DATABASE_CONNECTION_KEY = "databaseConnection";
+    
+    public class rendererHelper implements ListitemRenderer<TBLPerson>{
         
         @Override
-        public void render( Listitem listitem, CPerson person, int intIndex ) throws Exception {
+        public void render( Listitem listitem, TBLPerson person, int intIndex ) throws Exception {
             
             try {
                 
@@ -93,13 +97,13 @@ public class CManagerController extends SelectorComposer<Component> {
             
             super.doAfterCompose( comp );
             
-            CPerson person01 = new CPerson ("111","Al","Perez",1,LocalDate.parse("1978-09-24"),"Papa");
-            CPerson person02 = new CPerson ("222","Yle","Prieto",0,LocalDate.parse("1982-11-03"),"Mama");
-            CPerson person03 = new CPerson ("333","Nico","Perez Prieto",1,LocalDate.parse("2013-10-28"),"Hijo");
-            CPerson person04 = new CPerson ("444","aaa","AAA",1,LocalDate.parse("2004-04-04"),"444");
-            CPerson person05 = new CPerson ("555","bbb","BBB",1,LocalDate.parse("2005-05-05"),"555");
-            CPerson person06 = new CPerson ("666","ccc","CCC",0,LocalDate.parse("2006-06-06"),"666");
-            CPerson person07 = new CPerson ("777","ddd","DDD",0,LocalDate.parse("2007-07-07"),"777");
+            TBLPerson person01 = new TBLPerson ("111","Al","Perez",1,LocalDate.parse("1978-09-24"),"Papa");
+            TBLPerson person02 = new TBLPerson ("222","Yle","Prieto",0,LocalDate.parse("1982-11-03"),"Mama");
+            TBLPerson person03 = new TBLPerson ("333","Nico","Perez Prieto",1,LocalDate.parse("2013-10-28"),"Hijo");
+            TBLPerson person04 = new TBLPerson ("444","aaa","AAA",1,LocalDate.parse("2004-04-04"),"444");
+            TBLPerson person05 = new TBLPerson ("555","bbb","BBB",1,LocalDate.parse("2005-05-05"),"555");
+            TBLPerson person06 = new TBLPerson ("666","ccc","CCC",0,LocalDate.parse("2006-06-06"),"666");
+            TBLPerson person07 = new TBLPerson ("777","ddd","DDD",0,LocalDate.parse("2007-07-07"),"777");
             
             dataModel.add( person01 );
             dataModel.add( person02 );
@@ -112,7 +116,19 @@ public class CManagerController extends SelectorComposer<Component> {
             dataModel.setMultiple( true );
             
             listboxPersons.setModel( dataModel );
-            listboxPersons.setItemRenderer( new rendererHelper() );
+            listboxPersons.setItemRenderer( new rendererHelper() ); // aqui asociamos el renderizado de la vista
+            
+            Session currentSession = Sessions.getCurrent();
+            
+            if ( currentSession.getAttribute( _DATABASE_CONNECTION_KEY ) instanceof CDatabaseConnection ) {
+                
+                //Vamos a recuperar la sesion
+                // se usa otra cast o conversion de tipo forzado
+                databaseConnection = ( CDatabaseConnection ) currentSession.getAttribute( _DATABASE_CONNECTION_KEY );
+                
+                buttonConnectionToDB.setLabel( "Disconnect" );
+            }
+            
         }
         catch ( Exception e ) {
             
@@ -124,13 +140,20 @@ public class CManagerController extends SelectorComposer<Component> {
     @Listen( "onClick=#buttonConnectionToDB")
     public void onClickbuttonConnectionToDB ( Event event ){
         
-        if ( buttonConnectionToDB.getLabel().equalsIgnoreCase( "Connect" ) ){
+        Session currentSession = Sessions.getCurrent();
+        
+       // if ( buttonConnectionToDB.getLabel().equalsIgnoreCase( "Connect" ) ){
 
+        if  ( databaseConnection == null ) { // al estar persitida por la sesion se puede usar la coneccion como bandera
+            
             databaseConnection = new CDatabaseConnection();
             
             if ( databaseConnection.makeConnectionToDatabase() ) {
                 
+                currentSession.setAttribute( _DATABASE_CONNECTION_KEY, databaseConnection ); // agrego la sesion abierta
+                
                 buttonConnectionToDB.setLabel( "Disconnect" );
+                
                 Messagebox.show( "Conexion Exitosa" );                
                 
             }
@@ -144,7 +167,15 @@ public class CManagerController extends SelectorComposer<Component> {
                 
                 if ( databaseConnection.closeConnectionToDatabase() ){
                  
+                    databaseConnection = null;
+                    
+                    //currentSession.setAttribute( _DATABASE_CONNECTION_KEY, null ); // elimino la sesion abierta
+                    // se puede realizar de esta otra forma
+                    
+                    currentSession.removeAttribute( _DATABASE_CONNECTION_KEY );
+                    
                     Messagebox.show( "Conexion Cerrada" ); 
+                    
                     buttonConnectionToDB.setLabel( "Connect" );
                 }
                 else {
@@ -181,11 +212,11 @@ public class CManagerController extends SelectorComposer<Component> {
     @Listen( "onClick=#buttonModify")
     public void onClickbuttonModify ( Event event ){
         
-        Set<CPerson> selectedItems = dataModel.getSelection();
+        Set<TBLPerson> selectedItems = dataModel.getSelection();
         
         if (selectedItems != null && selectedItems.size() > 0) {
             
-            CPerson person = selectedItems.iterator().next(); // se crea la referencia del CPerson Seleccionado no se crea uno nuevo
+            TBLPerson person = selectedItems.iterator().next(); // se crea la referencia del CPerson Seleccionado no se crea uno nuevo
             
             
             Map<String,Object> params = new HashMap<String,Object>();
@@ -210,13 +241,13 @@ public class CManagerController extends SelectorComposer<Component> {
     @Listen( "onClick=#buttonDelete")
     public void onClickbuttonDelete ( Event event ){
         
-        Set<CPerson> selectedItems = dataModel.getSelection();
+        Set<TBLPerson> selectedItems = dataModel.getSelection();
         
         if (selectedItems != null && selectedItems.size() > 0) {
             
             String strBuffer = null;
             
-            for ( CPerson person : selectedItems ) {
+            for ( TBLPerson person : selectedItems ) {
                 
                 if (strBuffer == null){    
                     
@@ -236,7 +267,7 @@ public class CManagerController extends SelectorComposer<Component> {
                         
                         while (selectedItems.iterator().hasNext()) {
                             
-                            CPerson person = selectedItems.iterator().next();
+                            TBLPerson person = selectedItems.iterator().next();
                             
                             dataModel.remove( person );
                             
@@ -264,7 +295,7 @@ public class CManagerController extends SelectorComposer<Component> {
         
         if (event.getData() != null ){
             
-            CPerson person = (CPerson) event.getData(); // typecast
+            TBLPerson person = (TBLPerson) event.getData(); // typecast
             
             dataModel.add( person ); 
             
@@ -280,7 +311,7 @@ public class CManagerController extends SelectorComposer<Component> {
         
         if (event.getData() != null ){
             
-            CPerson person = (CPerson) event.getData(); // typecast
+            TBLPerson person = (TBLPerson) event.getData(); // typecast
             dataModel.notifyChange( person );   
         }
         // Una forma de  Refrescar el ListBox

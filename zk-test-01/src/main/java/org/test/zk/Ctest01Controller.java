@@ -2,7 +2,7 @@ package org.test.zk;
 
 import java.time.LocalDate;
 
-import org.test.zk.datamodel.CPerson;
+import org.test.zk.datamodel.TBLPerson;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.select.SelectorComposer;
@@ -15,7 +15,7 @@ import org.zkoss.zul.Selectbox;
 import org.zkoss.zul.Window;
 
 
-public class Ctest01Controller extends SelectorComposer<Component> implements ItemRenderer<CPerson> {
+public class Ctest01Controller extends SelectorComposer<Component> implements ItemRenderer<TBLPerson> {
 
    
     private static final long serialVersionUID = -8770470515037000449L;
@@ -40,7 +40,7 @@ public class Ctest01Controller extends SelectorComposer<Component> implements It
     
     protected ListModelList<String> dataModel = new ListModelList<String>(); 
     
-    protected ListModelList<CPerson> dataModelPerson = new ListModelList<CPerson>();
+    protected ListModelList<TBLPerson> dataModelPerson = new ListModelList<TBLPerson>();
     
     @Listen( "onClick=#buttonTest01")
     public void onClickButtonTest01( Event event ){
@@ -53,9 +53,9 @@ public class Ctest01Controller extends SelectorComposer<Component> implements It
         dataModel.add( "4" );
         dataModel.add( "5" );
   
-        dataModelPerson.add( new CPerson ( "12674936", "Al", " Perez",1,LocalDate.parse("1978-24-09"),"Papa") );
-        dataModelPerson.add( new CPerson ( "16082546", "Yle", " Prieto",0,LocalDate.parse("1982-03-11"),"Mama") );
-        dataModelPerson.add( new CPerson ( "00000000", "Nico", " Perez",1,LocalDate.parse("2013-28-10"),"Hijo") );
+        dataModelPerson.add( new TBLPerson ( "12674936", "Al", " Perez",1,LocalDate.parse("1978-24-09"),"Papa") );
+        dataModelPerson.add( new TBLPerson ( "16082546", "Yle", " Prieto",0,LocalDate.parse("1982-03-11"),"Mama") );
+        dataModelPerson.add( new TBLPerson ( "00000000", "Nico", " Perez",1,LocalDate.parse("2013-28-10"),"Hijo") );
         
         selectbox02.setModel( dataModelPerson );
         selectbox02.setItemRenderer( this );
@@ -96,7 +96,7 @@ public class Ctest01Controller extends SelectorComposer<Component> implements It
  
         if (selectbox02.getSelectedIndex() >= 0 ){
             
-            CPerson personSelect =  dataModelPerson.get( selectbox02.getSelectedIndex() );
+            TBLPerson personSelect =  dataModelPerson.get( selectbox02.getSelectedIndex() );
             
             windowTest01.setTitle( personSelect.getFirtsName() + " " + personSelect.getLastName() );
             
@@ -105,7 +105,7 @@ public class Ctest01Controller extends SelectorComposer<Component> implements It
     }
 
     @Override
-    public String render( Component arg0, CPerson arg1, int arg2 ) throws Exception {
+    public String render( Component arg0, TBLPerson arg1, int arg2 ) throws Exception {
                 return arg1.getFirtsName() + " " + arg1.getLastName();
     }
     
