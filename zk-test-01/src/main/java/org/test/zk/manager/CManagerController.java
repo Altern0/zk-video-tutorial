@@ -1,11 +1,12 @@
 package org.test.zk.manager;
 
 
-import java.time.LocalDate;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.test.zk.dao.TBLPersonDAO;
 import org.test.zk.database.CDatabaseConnection;
 import org.test.zk.datamodel.TBLPerson;
 import org.zkoss.zk.ui.Component;
@@ -33,6 +34,8 @@ public class CManagerController extends SelectorComposer<Component> {
     protected ListModelList<TBLPerson> dataModel = new ListModelList<TBLPerson>();
     
     public static final String _DATABASE_CONNECTION_KEY = "databaseConnection";
+    
+    protected CDatabaseConnection databaseConnection;
     
     public class rendererHelper implements ListitemRenderer<TBLPerson>{
         
@@ -88,8 +91,6 @@ public class CManagerController extends SelectorComposer<Component> {
     @Wire
     Button buttonModify;
     
-    protected CDatabaseConnection databaseConnection;
-    
     @Override
     public void doAfterCompose( Component comp ) {
         
@@ -97,6 +98,7 @@ public class CManagerController extends SelectorComposer<Component> {
             
             super.doAfterCompose( comp );
             
+            /*
             TBLPerson person01 = new TBLPerson ("111","Al","Perez",1,LocalDate.parse("1978-09-24"),"Papa");
             TBLPerson person02 = new TBLPerson ("222","Yle","Prieto",0,LocalDate.parse("1982-11-03"),"Mama");
             TBLPerson person03 = new TBLPerson ("333","Nico","Perez Prieto",1,LocalDate.parse("2013-10-28"),"Hijo");
@@ -112,7 +114,7 @@ public class CManagerController extends SelectorComposer<Component> {
             dataModel.add( person05 );
             dataModel.add( person06 );
             dataModel.add( person07 );
-            
+            */
             dataModel.setMultiple( true );
             
             listboxPersons.setModel( dataModel );
@@ -299,6 +301,9 @@ public class CManagerController extends SelectorComposer<Component> {
             
             dataModel.add( person ); 
             
+            //temporalmente probamos aqui el insertar de la DB
+            
+            TBLPersonDAO.insertData( databaseConnection, person );
         }
         
     }
