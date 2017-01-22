@@ -10,4 +10,7 @@
 	</preference>
 	-->
 	
+    <listener>
+        <listener-class>org.test.zk.zksubsystem.CZKSubSystemEvents</listener-class>
+    </listener>
 </zk>
