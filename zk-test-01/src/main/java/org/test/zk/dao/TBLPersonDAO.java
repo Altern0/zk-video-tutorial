@@ -73,10 +73,25 @@ public class TBLPersonDAO {
             
             statement.executeUpdate(SQLstr);
             
+            dataBaseConnection.getDBConnection().commit();
+            
+            statement.close();
+            
             bresult = true;
         }
         catch ( Exception ex ){
             
+            if ( dataBaseConnection != null && dataBaseConnection.getDBConnection() != null)
+                try {
+                  
+                    dataBaseConnection.getDBConnection().rollback(); // en caso de error vuelve atras
+                  
+                }
+                catch ( Exception ex1 ){
+                
+                    ex1.printStackTrace();
+                }
+              
             ex.printStackTrace();
             
         }
@@ -105,9 +120,22 @@ public class TBLPersonDAO {
             
             dataBaseConnection.getDBConnection().commit();
             
+            statement.close();
+            
             bresult = true;
         }
         catch ( Exception ex ){
+            
+            if ( dataBaseConnection != null && dataBaseConnection.getDBConnection() != null)
+              try {
+                
+                  dataBaseConnection.getDBConnection().rollback(); // en caso de error vuelve atras
+                
+              }
+              catch ( Exception ex1 ){
+              
+                  ex1.printStackTrace();
+              }
             
             ex.printStackTrace();
             
@@ -120,13 +148,50 @@ public class TBLPersonDAO {
     
     public static boolean updateData ( final CDatabaseConnection dataBaseConnection, final TBLPerson tblPerson) {
         
-        boolean bresult = false;
+ boolean bresult = false;
+        
+        try{
+            
+            Statement statement = dataBaseConnection.getDBConnection().createStatement();
+            // Esto se puede hacer con un ORM como hybermate o mybasty
+            final String SQLstr = "Update tblperson set Id ='" + tblPerson.getID() + "', FirtsName = '" + tblPerson.getFirtsName() 
+                    + "', LastName = '" + tblPerson.getLastName()  + "', Gender = '" + tblPerson.getGender() 
+                    + "', BirthDate = '" + tblPerson.getBirthDate().toString() + "', Comment = '" + tblPerson.getComment() 
+                    + "', UpdatedBy = 'Al', " + " UpdatedAtDate = '" + LocalDate.now().toString() 
+                    + "', UpdatedAtTime = '" + LocalTime.now().toString() +"' where id = '" + tblPerson.getID() + "'"; 
+            
+            statement.executeUpdate(SQLstr);
+            
+            dataBaseConnection.getDBConnection().commit();
+            
+            statement.close();
+            
+            bresult = true;
+        }
+        catch ( Exception ex ){
+            
+            if ( dataBaseConnection != null && dataBaseConnection.getDBConnection() != null)
+              try {
+                
+                  dataBaseConnection.getDBConnection().rollback(); // en caso de error vuelve atras
+                
+              }
+              catch ( Exception ex1 ){
+              
+                  ex1.printStackTrace();
+              }
+            
+            ex.printStackTrace();
+            
+        }
+        
         
         return bresult;
         
+        
     }
     
-    public static List<TBLPerson> searchtData( final CDatabaseConnection dataBaseConnection) {
+    public static List<TBLPerson> searchData( final CDatabaseConnection dataBaseConnection) {
         
         List<TBLPerson> result = new ArrayList<TBLPerson>();
         
@@ -139,25 +204,25 @@ public class TBLPersonDAO {
                 
                 while (resultSet.next() ){
                     
-                    TBLPerson  tblperson = new TBLPerson();
+                    TBLPerson  tblPerson = new TBLPerson();
                     
-                    tblperson.setID( resultSet.getString( "Id" ) );
-                    tblperson.setFirtsName( resultSet.getString( "FirtsName" ) );
-                    tblperson.setLastName( resultSet.getString( "LastName" ) );
-                    tblperson.setGender( resultSet.getInt( "Gender" ) );
-                    tblperson.setBirthDate( resultSet.getDate( "Birthdate" ).toLocalDate() );
-                    tblperson.setComment( resultSet.getString( "Comment" ) );
+                    tblPerson.setID( resultSet.getString( "Id" ) );
+                    tblPerson.setFirtsName( resultSet.getString( "FirtsName" ) );
+                    tblPerson.setLastName( resultSet.getString( "LastName" ) );
+                    tblPerson.setGender( resultSet.getInt( "Gender" ) );
+                    tblPerson.setBirthDate( resultSet.getDate( "Birthdate" ).toLocalDate() );
+                    tblPerson.setComment( resultSet.getString( "Comment" ) );
                     // estos metodos son de la clase CAuditableDatamodel 
-                    tblperson.setCreatedBy( resultSet.getString( "CreatedBy" ));
-                    tblperson.setCreatedAtDate( resultSet.getDate( "CreatedAtDate" ).toLocalDate() );    
-                    tblperson.setCreatedAtTime( resultSet.getTime( "CreatedAtTime" ).toLocalTime() );
+                    tblPerson.setCreatedBy( resultSet.getString( "CreatedBy" ));
+                    tblPerson.setCreatedAtDate( resultSet.getDate( "CreatedAtDate" ).toLocalDate() );    
+                    tblPerson.setCreatedAtTime( resultSet.getTime( "CreatedAtTime" ).toLocalTime() );
                     // los UpdatedBy pueden ser null pero no es relevante porque no accedo a nimgunmetodo de la clase string
-                    tblperson.setUpdatedBy( resultSet.getString( "UpdatedBy" ) );
+                    tblPerson.setUpdatedBy( resultSet.getString( "UpdatedBy" ) );
                     // cndiciono porque accedo al metodo toLocal???? y no pueden ser Null 
-                    tblperson.setUpdatedAtDate( resultSet.getDate( "UpdatedAtDate" ).toLocalDate() != null ? resultSet.getDate( "UpdatedDate" ).toLocalDate() : null );    
-                    tblperson.setUpdatedAtTime( resultSet.getTime( "UpdatedAtTime" ).toLocalTime() != null ? resultSet.getTime( "UpdatedTime" ).toLocalTime()  : null);
+                    tblPerson.setUpdatedAtDate( resultSet.getDate( "UpdatedAtDate" ) != null ? resultSet.getDate( "UpdatedAtDate" ).toLocalDate() : null );    
+                    tblPerson.setUpdatedAtTime( resultSet.getTime( "UpdatedAtTime" ) != null ? resultSet.getTime( "UpdatedAtTime" ).toLocalTime()  : null);
                  
-                    result.add( tblperson ); // se carga a la lista
+                    result.add( tblPerson ); // se carga a la lista
                 }
                 
                 //cerramos la consulta para liberar los recursos, pro dejamos la conexion abierta para utilizarla en otras operaciones 

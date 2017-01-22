@@ -1,10 +1,15 @@
 package org.test.zk.dialog;
 
+import org.test.zk.contants.SystemContants;
+import org.test.zk.dao.TBLPersonDAO;
+import org.test.zk.database.CDatabaseConnection;
 import org.test.zk.datamodel.TBLPerson;
 import org.zkoss.zhtml.Label;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.Session;
+import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.select.SelectorComposer;
@@ -22,6 +27,8 @@ public class CDialogController extends SelectorComposer<Component> {
     private static final long serialVersionUID = -8977563222707532143L;
     
     protected ListModelList<String> dataModel = new ListModelList<String>(); 
+    
+    protected CDatabaseConnection databaseConnection;
     
     protected Component callerComponent = null; // Variave de clase 
     
@@ -85,7 +92,31 @@ public class CDialogController extends SelectorComposer<Component> {
             dataModel.addToSelection( "Femenino" );
             
             final Execution execution = Executions.getCurrent();
-            personToModify = (TBLPerson) execution.getArg().get( "personToModify" ); // recibimos la person
+            
+            
+            //personToModify = (TBLPerson) execution.getArg().get( "personToModify" ); // recibimos la person
+            // PersonToModify ahora vie de la DB y del Argumento que recibimos 
+            // primero recuperamos la sesion y pasamos el id a modificar 
+            
+            Session currentSession = Sessions.getCurrent();
+            
+            if ( currentSession.getAttribute( SystemContants._DATABASE_CONNECTION_KEY ) instanceof CDatabaseConnection ) {
+                
+                //Vamos a recuperar la sesion
+                // se usa otra cast o conversion de tipo forzado
+                databaseConnection = ( CDatabaseConnection ) currentSession.getAttribute( SystemContants._DATABASE_CONNECTION_KEY );
+                
+              //  buttonConnectionToDB.setLabel( "Disconnect" );
+                
+                if ( execution.getArg().get( "IdPerson" ) instanceof String ) {
+                    
+                    //cargamos la data de la DB
+                    personToModify = TBLPersonDAO.loadData( databaseConnection, (String) execution.getArg().get( "IdPerson" ) );
+                    
+                }
+                    
+            }
+            
             
          // cuando se crea una nueva persona no es necesario personToModify
             if ( personToModify != null ) {
@@ -122,6 +153,7 @@ public class CDialogController extends SelectorComposer<Component> {
             personToModify.setBirthDate( new java.sql.Date(dateboxBirthday.getValue().getTime()).toLocalDate() );
             personToModify.setComment(textboxComment.getValue());
 
+            TBLPersonDAO.updateData( databaseConnection, personToModify ); // ACUALIZAAMOS EN LA DB
             
             // lanzamos el evento retornamos la persona a modificar
             Events.echoEvent( new Event( "onDialogFinished", callerComponent, personToModify ) );
@@ -137,6 +169,8 @@ public class CDialogController extends SelectorComposer<Component> {
             personToAdd.setGender(selectboxGender.getSelectedIndex());
             personToAdd.setBirthDate( new java.sql.Date(dateboxBirthday.getValue().getTime()).toLocalDate() );
             personToAdd.setComment(textboxComment.getValue());
+            
+            TBLPersonDAO.insertData( databaseConnection, personToAdd ); // INSERTAMOS EN LA DB
             
             Events.echoEvent( new Event( "onDialogFinished", callerComponent, personToAdd ) );
             

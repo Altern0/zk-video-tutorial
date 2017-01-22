@@ -3,9 +3,11 @@ package org.test.zk.manager;
 
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.test.zk.contants.SystemContants;
 import org.test.zk.dao.TBLPersonDAO;
 import org.test.zk.database.CDatabaseConnection;
 import org.test.zk.datamodel.TBLPerson;
@@ -14,6 +16,7 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Session;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
@@ -31,9 +34,7 @@ public class CManagerController extends SelectorComposer<Component> {
     
     private static final long serialVersionUID = -1591648938821366036L;
     
-    protected ListModelList<TBLPerson> dataModel = new ListModelList<TBLPerson>();
-    
-    public static final String _DATABASE_CONNECTION_KEY = "databaseConnection";
+    protected ListModelList<TBLPerson> dataModel =  null; //new ListModelList<TBLPerson>();
     
     protected CDatabaseConnection databaseConnection;
     
@@ -86,6 +87,9 @@ public class CManagerController extends SelectorComposer<Component> {
     Button buttonAdd;
     
     @Wire
+    Button buttonRefresh;
+    
+    @Wire
     Button buttonConnectionToDB;
     
     @Wire
@@ -114,19 +118,21 @@ public class CManagerController extends SelectorComposer<Component> {
             dataModel.add( person05 );
             dataModel.add( person06 );
             dataModel.add( person07 );
-            */
-            dataModel.setMultiple( true );
+            
             
             listboxPersons.setModel( dataModel );
             listboxPersons.setItemRenderer( new rendererHelper() ); // aqui asociamos el renderizado de la vista
+            */
+            
+            dataModel.setMultiple( true );
             
             Session currentSession = Sessions.getCurrent();
             
-            if ( currentSession.getAttribute( _DATABASE_CONNECTION_KEY ) instanceof CDatabaseConnection ) {
+            if ( currentSession.getAttribute( SystemContants._DATABASE_CONNECTION_KEY ) instanceof CDatabaseConnection ) {
                 
                 //Vamos a recuperar la sesion
                 // se usa otra cast o conversion de tipo forzado
-                databaseConnection = ( CDatabaseConnection ) currentSession.getAttribute( _DATABASE_CONNECTION_KEY );
+                databaseConnection = ( CDatabaseConnection ) currentSession.getAttribute( SystemContants._DATABASE_CONNECTION_KEY );
                 
                 buttonConnectionToDB.setLabel( "Disconnect" );
             }
@@ -152,7 +158,7 @@ public class CManagerController extends SelectorComposer<Component> {
             
             if ( databaseConnection.makeConnectionToDatabase() ) {
                 
-                currentSession.setAttribute( _DATABASE_CONNECTION_KEY, databaseConnection ); // agrego la sesion abierta
+                currentSession.setAttribute( SystemContants._DATABASE_CONNECTION_KEY, databaseConnection ); // agrego la sesion abierta
                 
                 buttonConnectionToDB.setLabel( "Disconnect" );
                 
@@ -174,7 +180,7 @@ public class CManagerController extends SelectorComposer<Component> {
                     //currentSession.setAttribute( _DATABASE_CONNECTION_KEY, null ); // elimino la sesion abierta
                     // se puede realizar de esta otra forma
                     
-                    currentSession.removeAttribute( _DATABASE_CONNECTION_KEY );
+                    currentSession.removeAttribute( SystemContants._DATABASE_CONNECTION_KEY );
                     
                     Messagebox.show( "Conexion Cerrada" ); 
                     
@@ -192,10 +198,39 @@ public class CManagerController extends SelectorComposer<Component> {
             }
         }
         
-        
+        //forzamos a refrescar
+        Events.echoEvent( new Event( "onClick", buttonRefresh ) ); // llamamos al evento onClick del Boton Refrescar.  
         
     }
          
+    @Listen( "onClick=#buttonRefresh")
+    public void onClickbuttonRefresh ( Event event ){
+        
+
+        //inicializamos el Listbox
+        listboxPersons.setModel( (ListModelList <?>) null );
+        
+        // vamos a cargar en el dataModel la DB pero primero recuperamos la Conexion
+        Session currentSession = Sessions.getCurrent();
+                
+        if ( currentSession.getAttribute( SystemContants._DATABASE_CONNECTION_KEY ) instanceof CDatabaseConnection ) {
+           
+             databaseConnection = ( CDatabaseConnection ) currentSession.getAttribute( SystemContants._DATABASE_CONNECTION_KEY ); //recuperamos la sesion
+        
+             // para recargar el modelo
+             List<TBLPerson> listData = TBLPersonDAO.searchData( databaseConnection );
+             
+             // cargamos el Datamodel con la lista que nos retrona la base de datso
+             dataModel = new ListModelList<TBLPerson>( listData );
+             //luego recargamos el modelo
+             listboxPersons.setModel( dataModel );
+             // y lo renderizamos con nuestra funcion
+             listboxPersons.setItemRenderer( new rendererHelper() ); // aqui asociamos el renderizado de la vista
+             
+             
+        }    
+        
+    }
     
     @Listen( "onClick=#buttonAdd")
     public void onClickbuttonAdd ( Event event ){
@@ -203,7 +238,7 @@ public class CManagerController extends SelectorComposer<Component> {
         // paso de parametros a la ventana dialog
         
         Map<String,Object> params = new HashMap<String,Object>();
-        params.put( "callerComponent", buttonAdd );
+        params.put( "callerComponent", listboxPersons); // buttonAdd );
         
         Window win = ( Window ) Executions.createComponents("/dialog.zul", null, params);
         
@@ -223,8 +258,11 @@ public class CManagerController extends SelectorComposer<Component> {
             
             Map<String,Object> params = new HashMap<String,Object>();
             
-            params.put( "personToModify", person ); // se pasa la referencia del CPerson seleccionada
-            params.put( "callerComponent", buttonModify ); // se pasa el componente en este caso el botun donde se va a ejecutar
+           // params.put( "personToModify", person ); // se pasa la referencia del CPerson seleccionada
+            // ya no enviamos como parametros PersonToModify  sino el IdPerson
+            params.put( "IdPerson", person.getID() );
+            
+            params.put( "callerComponent", listboxPersons ); //buttonModify ); // se pasa el componente en este caso el botun donde se va a ejecutar
             Window win = ( Window ) Executions.createComponents("/dialog.zul", null, params);
             
             win.doModal();
@@ -288,6 +326,18 @@ public class CManagerController extends SelectorComposer<Component> {
     }
     
     
+    @Listen( "onDialogFinished=#listboxPersons" ) // indica que se modifico la DB y que debe refrescar el lisbox
+    public void onDialogFinishedlistboxPersons ( Event event) {
+        
+        Events.echoEvent( new Event( "onClick", buttonRefresh ) ); // llamamos al evento onClick del Boton Refrescar.
+        
+    }
+    
+    
+    
+    
+    /*estos Eventos ya no son necesarios aqui en el MAnager porque solo lo vamos a limitar para listar elementos, 
+      todo lo demas lo dejaremos en el dialog
     @Listen( "onDialogFinished=#buttonAdd" )
     public void onDialogFinishedbuttonAdd ( Event event) {
         
@@ -303,7 +353,7 @@ public class CManagerController extends SelectorComposer<Component> {
             
             //temporalmente probamos aqui el insertar de la DB
             
-            TBLPersonDAO.insertData( databaseConnection, person );
+            //TBLPersonDAO.insertData( databaseConnection, person ); ya no madamos a guardar aqui sino en el DialogController en el onclick de aceptar
         }
         
     }
@@ -324,6 +374,6 @@ public class CManagerController extends SelectorComposer<Component> {
         // listboxPersons.setModel( dataModel ); // se asina denuevo el setModel
         
     }
-    
+    */
     
 }

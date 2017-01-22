@@ -23,7 +23,8 @@
             
      <div id="divButtonContainer">
      
-        <button id="buttonConnectionToDB" label="Connect"  style="float:right; margin-left:5px;"/>    
+        <button id="buttonConnectionToDB" label="Connect" />
+        <button id="buttonRefresh" label="Refresh" />    
         <button id="buttonDelete" label="Delete"  style="float:right; margin-left:5px;"/>  
         <button id="buttonModify" label="Modify"  style="float:right; margin-left:5px;"/>
         <button id="buttonAdd" label="Add" style="float:right; margin-left:5px;"/>
