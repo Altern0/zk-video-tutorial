@@ -100,11 +100,11 @@ public class CDialogController extends SelectorComposer<Component> {
             
             Session currentSession = Sessions.getCurrent();
             
-            if ( currentSession.getAttribute( SystemContants._DATABASE_CONNECTION_KEY ) instanceof CDatabaseConnection ) {
+            if ( currentSession.getAttribute( SystemContants._DB_Connection_Session_Key ) instanceof CDatabaseConnection ) {
                 
                 //Vamos a recuperar la sesion
                 // se usa otra cast o conversion de tipo forzado
-                databaseConnection = ( CDatabaseConnection ) currentSession.getAttribute( SystemContants._DATABASE_CONNECTION_KEY );
+                databaseConnection = ( CDatabaseConnection ) currentSession.getAttribute( SystemContants._DB_Connection_Session_Key );
                 
               //  buttonConnectionToDB.setLabel( "Disconnect" );
                 

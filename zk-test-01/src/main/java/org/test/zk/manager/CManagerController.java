@@ -130,11 +130,11 @@ public class CManagerController extends SelectorComposer<Component> {
             
             Session currentSession = Sessions.getCurrent();
             
-            if ( currentSession.getAttribute( SystemContants._DATABASE_CONNECTION_KEY ) instanceof CDatabaseConnection ) {
+            if ( currentSession.getAttribute( SystemContants._DB_Connection_Session_Key ) instanceof CDatabaseConnection ) {
                 
                 //Vamos a recuperar la sesion
                 // se usa otra cast o conversion de tipo forzado
-                databaseConnection = ( CDatabaseConnection ) currentSession.getAttribute( SystemContants._DATABASE_CONNECTION_KEY );
+                databaseConnection = ( CDatabaseConnection ) currentSession.getAttribute( SystemContants._DB_Connection_Session_Key );
                 
                 buttonConnectionToDB.setLabel( "Disconnect" );
             }
@@ -159,15 +159,15 @@ public class CManagerController extends SelectorComposer<Component> {
             databaseConnection = new CDatabaseConnection();
             
             // em esta linea obtenemos la ruta completa del Archivo de Configuracion de la base de datos inclido el /Config/
-            String strRunningPath = Sessions.getCurrent().getWebApp().getRealPath( SystemContants._WEB_INF_Dir ) + File.separator + SystemContants._CONFIG_DIR + File.separator;
+            String strRunningPath = Sessions.getCurrent().getWebApp().getRealPath( SystemContants._WEB_INF_Dir ) + File.separator + SystemContants._Config_Dir + File.separator;
             
             CDatabaseConnectionConfig databaseConnectionConfig = new CDatabaseConnectionConfig();
             
-            databaseConnectionConfig.loadConfig( strRunningPath + SystemContants._DATABASE_CONFIG_file );
+            databaseConnectionConfig.loadConfig( strRunningPath + SystemContants._Database_Connection_Config_File_Name );
             
             if ( databaseConnection.makeConnectionToDatabase( databaseConnectionConfig ) ) {
                 
-                currentSession.setAttribute( SystemContants._DATABASE_CONNECTION_KEY, databaseConnection ); // agrego la sesion abierta
+                currentSession.setAttribute( SystemContants._DB_Connection_Session_Key, databaseConnection ); // agrego la sesion abierta
                 
                 buttonConnectionToDB.setLabel( "Disconnect" );
                 
@@ -189,7 +189,7 @@ public class CManagerController extends SelectorComposer<Component> {
                     //currentSession.setAttribute( _DATABASE_CONNECTION_KEY, null ); // elimino la sesion abierta
                     // se puede realizar de esta otra forma
                     
-                    currentSession.removeAttribute( SystemContants._DATABASE_CONNECTION_KEY );
+                    currentSession.removeAttribute( SystemContants._DB_Connection_Session_Key );
                     
                     Messagebox.show( "Conexion Cerrada" ); 
                     
@@ -222,9 +222,9 @@ public class CManagerController extends SelectorComposer<Component> {
         // vamos a cargar en el dataModel la DB pero primero recuperamos la Conexion
         Session currentSession = Sessions.getCurrent();
                 
-        if ( currentSession.getAttribute( SystemContants._DATABASE_CONNECTION_KEY ) instanceof CDatabaseConnection ) {
+        if ( currentSession.getAttribute( SystemContants._DB_Connection_Session_Key ) instanceof CDatabaseConnection ) {
            
-             databaseConnection = ( CDatabaseConnection ) currentSession.getAttribute( SystemContants._DATABASE_CONNECTION_KEY ); //recuperamos la sesion
+             databaseConnection = ( CDatabaseConnection ) currentSession.getAttribute( SystemContants._DB_Connection_Session_Key ); //recuperamos la sesion
         
              // para recargar el modelo
              List<TBLPerson> listData = TBLPersonDAO.searchData( databaseConnection );
