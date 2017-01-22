@@ -1,6 +1,9 @@
 package org.test.zk.database;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.Serializable;
+import java.util.Properties;
 
 public class CDatabaseConnectionConfig implements  Serializable{
 
@@ -28,6 +31,50 @@ public class CDatabaseConnectionConfig implements  Serializable{
     
     public CDatabaseConnectionConfig(){
         
+    }
+    
+    public boolean loadConfig( String strConfigPath){
+        
+        boolean bresult = false;
+        
+        try {
+            
+            File configFilePath =  new File(strConfigPath);
+
+            if ( configFilePath.exists() ){
+                
+                Properties configsData = new Properties();
+                
+                FileInputStream inpuStream = new FileInputStream( configFilePath );
+                
+                configsData.loadFromXML( inpuStream ); //aqui leemos del archivo
+                
+                this.strDriver = configsData.getProperty( "driver" );
+                this.strPrefix = configsData.getProperty( "prefix" );
+                this.strHost = configsData.getProperty( "host" );
+                this.strPort = configsData.getProperty( "port" );
+                this.strUser = configsData.getProperty( "user" );
+                this.strPassword = configsData.getProperty( "password" );
+                this.strDatabase = configsData.getProperty( "database" );
+                
+                inpuStream.close(); // cerramos el stream
+                
+                bresult = true;
+            }
+            else {
+                
+                System.out.println( "ERROR THE FILE NO FOUND" );
+                
+            }
+            
+            
+        }
+        catch ( Exception ex ){
+            
+            ex.printStackTrace();
+        }
+        
+        return bresult;
     }
 
     

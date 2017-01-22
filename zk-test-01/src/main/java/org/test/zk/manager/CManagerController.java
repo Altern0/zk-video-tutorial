@@ -2,6 +2,7 @@ package org.test.zk.manager;
 
 
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,7 @@ import java.util.Set;
 import org.test.zk.contants.SystemContants;
 import org.test.zk.dao.TBLPersonDAO;
 import org.test.zk.database.CDatabaseConnection;
+import org.test.zk.database.CDatabaseConnectionConfig;
 import org.test.zk.datamodel.TBLPerson;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -156,7 +158,14 @@ public class CManagerController extends SelectorComposer<Component> {
             
             databaseConnection = new CDatabaseConnection();
             
-            if ( databaseConnection.makeConnectionToDatabase() ) {
+            // em esta linea obtenemos la ruta completa del Archivo de Configuracion de la base de datos inclido el /Config/
+            String strRunningPath = Sessions.getCurrent().getWebApp().getRealPath( SystemContants._WEB_INF_Dir ) + File.separator + SystemContants._CONFIG_DIR + File.separator;
+            
+            CDatabaseConnectionConfig databaseConnectionConfig = new CDatabaseConnectionConfig();
+            
+            databaseConnectionConfig.loadConfig( strRunningPath + SystemContants._DATABASE_CONFIG_file );
+            
+            if ( databaseConnection.makeConnectionToDatabase( databaseConnectionConfig ) ) {
                 
                 currentSession.setAttribute( SystemContants._DATABASE_CONNECTION_KEY, databaseConnection ); // agrego la sesion abierta
                 
