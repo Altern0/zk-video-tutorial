@@ -1,6 +1,6 @@
 package org.test.zk.dialog;
 
-import org.test.zk.contants.SystemContants;
+import org.test.zk.contants.SystemConstants;
 import org.test.zk.dao.TBLPersonDAO;
 import org.test.zk.database.CDatabaseConnection;
 import org.test.zk.datamodel.TBLPerson;
@@ -100,11 +100,11 @@ public class CDialogController extends SelectorComposer<Component> {
             
             Session currentSession = Sessions.getCurrent();
             
-            if ( currentSession.getAttribute( SystemContants._DB_Connection_Session_Key ) instanceof CDatabaseConnection ) {
+            if ( currentSession.getAttribute( SystemConstants._DB_Connection_Session_Key ) instanceof CDatabaseConnection ) {
                 
                 //Vamos a recuperar la sesion
                 // se usa otra cast o conversion de tipo forzado
-                databaseConnection = ( CDatabaseConnection ) currentSession.getAttribute( SystemContants._DB_Connection_Session_Key );
+                databaseConnection = ( CDatabaseConnection ) currentSession.getAttribute( SystemConstants._DB_Connection_Session_Key );
                 
               //  buttonConnectionToDB.setLabel( "Disconnect" );
                 

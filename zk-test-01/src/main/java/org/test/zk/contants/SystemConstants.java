@@ -2,7 +2,7 @@ package org.test.zk.contants;
 
 import java.io.File;
 
-public class SystemContants {
+public class SystemConstants {
     
   //Declaración de todas las contantes usadas en el sistema 
           
@@ -30,7 +30,7 @@ public class SystemContants {
          public static final String _WEB_INF_Dir = "WEB-INF"; // + File.separator; No funciona bien en windows con el \ al final 
      
      
-         public static final String _Config_Dir = "config"; 
+         public static final String _Config_Dir = "config" + File.separator; ; 
      
      
          public static final String _Database_Connection_Config_File_Name = "database.config.xml"; 

@@ -9,7 +9,6 @@
 		<value>zk-test-01</value>
 	</preference>
 	-->
-	
     <listener>
         <listener-class>org.test.zk.zksubsystem.CZKSubSystemEvents</listener-class>
     </listener>
