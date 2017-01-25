@@ -1,7 +1,6 @@
 package org.test.zk.manager;
 
 
-
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
@@ -30,6 +29,8 @@ import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
+
+import commonlibs.extendedlogger.CExtendedLogger;
 
 
 public class CManagerController extends SelectorComposer<Component> {
@@ -152,6 +153,7 @@ public class CManagerController extends SelectorComposer<Component> {
         
         Session currentSession = Sessions.getCurrent();
         
+       
        // if ( buttonConnectionToDB.getLabel().equalsIgnoreCase( "Connect" ) ){
 
         if  ( databaseConnection == null ) { // al estar persitida por la sesion se puede usar la coneccion como bandera
@@ -162,27 +164,44 @@ public class CManagerController extends SelectorComposer<Component> {
             String strRunningPath = Sessions.getCurrent().getWebApp().getRealPath( SystemConstants._WEB_INF_Dir ) + File.separator + SystemConstants._Config_Dir + File.separator;
             
             CDatabaseConnectionConfig databaseConnectionConfig = new CDatabaseConnectionConfig();
+           
+            // obtenemos el logger del objeto ebApp
+            CExtendedLogger webAppLogger = (CExtendedLogger) Sessions.getCurrent().getWebApp().getAttribute(  SystemConstants._Webapp_Logger_App_Attribute_Key );
             
-            databaseConnectionConfig.loadConfig( strRunningPath + SystemConstants._Database_Connection_Config_File_Name );
+            if (databaseConnectionConfig.loadConfig( strRunningPath + SystemConstants._Database_Connection_Config_File_Name, webAppLogger, null )) {
             
-            if ( databaseConnection.makeConnectionToDatabase( databaseConnectionConfig ) ) {
+                if ( databaseConnection.makeConnectionToDatabase( databaseConnectionConfig, webAppLogger, null ) ) {
+        
+                    //Salvamos la configuracion en el objeto databaseConnection
+                    //databaseConnection.setDBConnectionConfig( databaseConnectionConfig, webAppLogger, null );
                 
-                currentSession.setAttribute( SystemConstants._DB_Connection_Session_Key, databaseConnection ); // agrego la sesion abierta
+                    // agrego la sesion abierta
+                    currentSession.setAttribute( SystemConstants._DB_Connection_Session_Key, databaseConnection ); 
                 
-                buttonConnectionToDB.setLabel( "Disconnect" );
+                    buttonConnectionToDB.setLabel( "Disconnect" );
                 
-                Messagebox.show( "Conexion Exitosa" );                
+                    Messagebox.show( "Conexion Exitosa" );                
                 
+                }
+                else {
+            
+                    Messagebox.show( "Conexion Fallida" );
+                }
             }
             else {
-            
-                Messagebox.show( "Conexion Fallida" );
+                
+                Messagebox.show( "error al leer el archivo de configuracion" );
             }
+        
         }
         else {
+            
             if ( databaseConnection != null ){
                 
-                if ( databaseConnection.closeConnectionToDatabase() ){
+                // obtenemos el logger del objeto ebApp
+                CExtendedLogger webAppLogger = (CExtendedLogger) Sessions.getCurrent().getWebApp().getAttribute(  SystemConstants._Webapp_Logger_App_Attribute_Key );
+                
+                if ( databaseConnection.closeConnectionToDatabase(webAppLogger, null) ){
                  
                     databaseConnection = null;
                     
