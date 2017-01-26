@@ -1,4 +1,4 @@
-package org.test.zk.manager;
+package org.test.zk.controllers.person.manager;
 
 
 import java.io.File;
@@ -268,7 +268,7 @@ public class CManagerController extends SelectorComposer<Component> {
         Map<String,Object> params = new HashMap<String,Object>();
         params.put( "callerComponent", listboxPersons); // buttonAdd );
         
-        Window win = ( Window ) Executions.createComponents("/dialog.zul", null, params);
+        Window win = ( Window ) Executions.createComponents("/views/person/editor/editor.zul", null, params);
         
         win.doModal();
         
@@ -291,7 +291,7 @@ public class CManagerController extends SelectorComposer<Component> {
             params.put( "IdPerson", person.getID() );
             
             params.put( "callerComponent", listboxPersons ); //buttonModify ); // se pasa el componente en este caso el botun donde se va a ejecutar
-            Window win = ( Window ) Executions.createComponents("/dialog.zul", null, params);
+            Window win = ( Window ) Executions.createComponents("/views/person/editor/editor.zul", null, params);
             
             win.doModal();
             
@@ -336,8 +336,11 @@ public class CManagerController extends SelectorComposer<Component> {
                         while (selectedItems.iterator().hasNext()) {
                             
                             TBLPerson person = selectedItems.iterator().next();
+                                                        
+                            TBLPersonDAO.deletaData( databaseConnection, person.getID() );
                             
                             dataModel.remove( person );
+                            
                             
                         }       
                         

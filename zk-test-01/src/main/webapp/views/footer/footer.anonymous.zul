@@ -1,0 +1,16 @@
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c" ?>
+<zk>
+ 
+ <div hflex="1" vflex="1"  sclass="footer">
+ 
+    <vbox hflex="1" vflex="1"  align="center">
+    
+    Copyright Corp. Inc.
+    <a href="http://www.suweb.com">http://www.suweb.com</a>
+    
+    
+    </vbox>  
+ 
+ </div>
+
+</zk>

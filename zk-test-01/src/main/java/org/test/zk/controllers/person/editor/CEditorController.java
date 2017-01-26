@@ -1,4 +1,4 @@
-package org.test.zk.dialog;
+package org.test.zk.controllers.person.editor;
 
 import org.test.zk.contants.SystemConstants;
 import org.test.zk.dao.TBLPersonDAO;
@@ -22,7 +22,7 @@ import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
 
-public class CDialogController extends SelectorComposer<Component> {
+public class CEditorController extends SelectorComposer<Component> {
    
     private static final long serialVersionUID = -8977563222707532143L;
     

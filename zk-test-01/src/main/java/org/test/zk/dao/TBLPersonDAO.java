@@ -69,7 +69,7 @@ public class TBLPersonDAO {
             
             Statement statement = dataBaseConnection.getDBConnection().createStatement();
             
-            final String SQLstr = "Delete tblperson where id = '" + strId + "'"; 
+            final String SQLstr = "Delete from tblperson where id = '" + strId + "'"; 
             
             statement.executeUpdate(SQLstr);
             
