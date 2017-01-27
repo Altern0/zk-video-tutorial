@@ -1,4 +1,4 @@
-package org.test.zk.datamodel;
+package org.test.zk.database.datamodel;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -8,11 +8,11 @@ public class CAuditableDataModel implements IAuditableDataModel {
     private static final long serialVersionUID = 8828055737133143396L;
 
     protected String strCretedBy = null;
-    protected LocalDate CreatedAtDate = null;
-    protected LocalTime CreatedAtTime = null;
+    protected LocalDate createdAtDate = null;
+    protected LocalTime createdAtTime = null;
     protected String strUpdatedBy = null;
-    protected LocalDate UpdatedAtDate = null;
-    protected LocalTime UpdatedAtTime = null;
+    protected LocalDate updatedAtDate = null;
+    protected LocalTime updatedAtTime = null;
   
     @Override
     public String getCreatedBy() {
@@ -30,25 +30,25 @@ public class CAuditableDataModel implements IAuditableDataModel {
     @Override
     public LocalDate getCreatedAtDate() {
         
-        return CreatedAtDate;
+        return createdAtDate;
     }
 
     @Override
     public void setCreatedAtDate( LocalDate createdAtDate ) {
         
-        this.CreatedAtDate = createdAtDate;
+        this.createdAtDate = createdAtDate;
     }
 
     @Override
     public LocalTime getCreatedAtTime() {
         
-        return CreatedAtTime;
+        return createdAtTime;
     }
 
     @Override
     public void setCreatedAtTime( LocalTime createdAtTime ) {
         
-        this.CreatedAtTime = createdAtTime;
+        this.createdAtTime = createdAtTime;
         
     }
 
@@ -68,26 +68,26 @@ public class CAuditableDataModel implements IAuditableDataModel {
     @Override
     public LocalDate getUpdatedAtDate() {
         
-        return UpdatedAtDate;
+        return updatedAtDate;
     }
 
     @Override
     public void setUpdatedAtDate( LocalDate updatedAtDate ) {
         
-        this.UpdatedAtDate = updatedAtDate;
+        this.updatedAtDate = updatedAtDate;
         
     }
 
     @Override
     public LocalTime getUpdatedAtTime() {
         
-        return UpdatedAtTime;
+        return updatedAtTime;
     }
 
     @Override
     public void setUpdatedAtTime( LocalTime updatedAtTime ) {
         
-        this.UpdatedAtTime = updatedAtTime;
+        this.updatedAtTime = updatedAtTime;
         
     }
     

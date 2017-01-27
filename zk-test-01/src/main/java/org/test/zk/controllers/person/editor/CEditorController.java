@@ -1,9 +1,9 @@
 package org.test.zk.controllers.person.editor;
 
 import org.test.zk.contants.SystemConstants;
-import org.test.zk.dao.TBLPersonDAO;
 import org.test.zk.database.CDatabaseConnection;
-import org.test.zk.datamodel.TBLPerson;
+import org.test.zk.database.dao.PersonDAO;
+import org.test.zk.database.datamodel.TBLPerson;
 import org.zkoss.zhtml.Label;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Execution;
@@ -21,6 +21,9 @@ import org.zkoss.zul.Selectbox;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
+import commonlibs.commonclasses.CLanguage;
+import commonlibs.extendedlogger.CExtendedLogger;
+
 
 public class CEditorController extends SelectorComposer<Component> {
    
@@ -29,6 +32,10 @@ public class CEditorController extends SelectorComposer<Component> {
     protected ListModelList<String> dataModel = new ListModelList<String>(); 
     
     protected CDatabaseConnection databaseConnection;
+    
+    protected CExtendedLogger controllerLogger = null;
+    
+    protected CLanguage controllerLanguage = null;   
     
     protected Component callerComponent = null; // Variave de clase 
     
@@ -81,6 +88,10 @@ public class CEditorController extends SelectorComposer<Component> {
         try {
             
             super.doAfterCompose( comp );
+            
+            // obtenemos el logger del objeto webApp y guardamos una referencia en la variable de clase controllerLogger 
+            controllerLogger = (CExtendedLogger) Sessions.getCurrent().getWebApp().getAttribute(  SystemConstants._Webapp_Logger_App_Attribute_Key );
+               
             dateboxBirthday.setFormat( "dd-MM-yyyy" );
             
             dataModel.add( "Femenino" );
@@ -111,7 +122,7 @@ public class CEditorController extends SelectorComposer<Component> {
                 if ( execution.getArg().get( "IdPerson" ) instanceof String ) {
                     
                     //cargamos la data de la DB
-                    personToModify = TBLPersonDAO.loadData( databaseConnection, (String) execution.getArg().get( "IdPerson" ) );
+                    personToModify = PersonDAO.loadData( databaseConnection, (String) execution.getArg().get( "IdPerson" ), controllerLogger, controllerLanguage );
                     
                 }
                     
@@ -153,7 +164,7 @@ public class CEditorController extends SelectorComposer<Component> {
             personToModify.setBirthDate( new java.sql.Date(dateboxBirthday.getValue().getTime()).toLocalDate() );
             personToModify.setComment(textboxComment.getValue());
 
-            TBLPersonDAO.updateData( databaseConnection, personToModify ); // ACUALIZAAMOS EN LA DB
+            PersonDAO.updateData( databaseConnection, personToModify, controllerLogger, controllerLanguage ); // ACUALIZAAMOS EN LA DB
             
             // lanzamos el evento retornamos la persona a modificar
             Events.echoEvent( new Event( "onDialogFinished", callerComponent, personToModify ) );
@@ -170,7 +181,7 @@ public class CEditorController extends SelectorComposer<Component> {
             personToAdd.setBirthDate( new java.sql.Date(dateboxBirthday.getValue().getTime()).toLocalDate() );
             personToAdd.setComment(textboxComment.getValue());
             
-            TBLPersonDAO.insertData( databaseConnection, personToAdd ); // INSERTAMOS EN LA DB
+            PersonDAO.insertData( databaseConnection, personToAdd, controllerLogger, controllerLanguage ); // INSERTAMOS EN LA DB
             
             Events.echoEvent( new Event( "onDialogFinished", callerComponent, personToAdd ) );
             

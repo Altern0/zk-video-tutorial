@@ -1,4 +1,4 @@
-package org.test.zk.dao;
+package org.test.zk.database.dao;
 
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -7,13 +7,16 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 
 import org.test.zk.database.CDatabaseConnection;
-import org.test.zk.datamodel.TBLPerson;
+import org.test.zk.database.datamodel.TBLPerson;
+
+import commonlibs.commonclasses.CLanguage;
+import commonlibs.extendedlogger.CExtendedLogger;
 
 import java.util.List;
 
-public class TBLPersonDAO {
+public class PersonDAO {
     
-    public static TBLPerson loadData ( final CDatabaseConnection dataBaseConnection, final String strId ) {
+    public static TBLPerson loadData ( final CDatabaseConnection dataBaseConnection, final String strId, CExtendedLogger localLogger, CLanguage localLanguage ) {
         
         TBLPerson result = null;
         
@@ -36,13 +39,13 @@ public class TBLPersonDAO {
                     result.setComment( resultSet.getString( "Comment" ) );
                     // estos metodos son de la clase CAuditableDatamodel 
                     result.setCreatedBy( resultSet.getString( "CreatedBy" ));
-                    result.setCreatedAtDate( resultSet.getDate( "CreateDate" ).toLocalDate() );    
-                    result.setCreatedAtTime( resultSet.getTime( "CreateTime" ).toLocalTime() );
+                    result.setCreatedAtDate( resultSet.getDate( "CreateAtDate" ).toLocalDate() );    
+                    result.setCreatedAtTime( resultSet.getTime( "CreateAtTime" ).toLocalTime() );
                     // los UpdatedBy pueden ser null pero no es relevante porque no accedo a nimgunmetodo de la clase string
                     result.setUpdatedBy( resultSet.getString( "UpdatedBy" ) );
                     // cndiciono porque accedo al metodo toLocal???? y no pueden ser Null 
-                    result.setUpdatedAtDate( resultSet.getDate( "UpdatedDate" ).toLocalDate() != null ? resultSet.getDate( "UpdatedDate" ).toLocalDate() : null );    
-                    result.setUpdatedAtTime( resultSet.getTime( "UpdatedTime" ).toLocalTime() != null ? resultSet.getTime( "UpdatedTime" ).toLocalTime()  : null);
+                    result.setUpdatedAtDate( resultSet.getDate( "UpdatedAtDate" ).toLocalDate() != null ? resultSet.getDate( "UpdatedAtDate" ).toLocalDate() : null );    
+                    result.setUpdatedAtTime( resultSet.getTime( "UpdatedAtTime" ).toLocalTime() != null ? resultSet.getTime( "UpdatedAtTime" ).toLocalTime()  : null);
                 }
                 
                 //cerramos la consulta para liberar los recursos, pro dejamos la conexion abierta para utilizarla en otras operaciones 
@@ -54,15 +57,15 @@ public class TBLPersonDAO {
         }
         catch ( Exception ex ){
            
-            ex.printStackTrace();
-            
+            if ( localLogger != null ) localLogger.logException( "-1021" , ex.getMessage(), ex );
+                
         }
         
         return result;
         
     }
     
-    public static boolean deletaData ( final CDatabaseConnection dataBaseConnection, final String strId ) {
+    public static boolean deletaData ( final CDatabaseConnection dataBaseConnection, final String strId, CExtendedLogger localLogger, CLanguage localLanguage ) {
         
         boolean bresult = false;
         try{
@@ -81,7 +84,7 @@ public class TBLPersonDAO {
         }
         catch ( Exception ex ){
             
-            if ( dataBaseConnection != null && dataBaseConnection.getDBConnection() != null)
+            if ( dataBaseConnection != null && dataBaseConnection.getDBConnection() != null) 
                 try {
                   
                     dataBaseConnection.getDBConnection().rollback(); // en caso de error vuelve atras
@@ -89,18 +92,18 @@ public class TBLPersonDAO {
                 }
                 catch ( Exception ex1 ){
                 
-                    ex1.printStackTrace();
+                    if ( localLogger != null ) localLogger.logException( "-1021" , ex.getMessage(), ex );
                 }
               
-            ex.printStackTrace();
-            
+            if ( localLogger != null )  localLogger.logException( "-1021" , ex.getMessage(), ex );
+              
         }
         
         return bresult;
         
     }
     
-    public static boolean insertData ( final CDatabaseConnection dataBaseConnection, final TBLPerson tblPerson ) {
+    public static boolean insertData ( final CDatabaseConnection dataBaseConnection, final TBLPerson tblPerson, CExtendedLogger localLogger, CLanguage localLanguage ) {
         
         boolean bresult = false;
         
@@ -134,21 +137,20 @@ public class TBLPersonDAO {
               }
               catch ( Exception ex1 ){
               
-                  ex1.printStackTrace();
+                  if ( localLogger != null )  localLogger.logException( "-1021" , ex1.getMessage(), ex1 );
               }
             
-            ex.printStackTrace();
+            if ( localLogger != null )  localLogger.logException( "-1021" , ex.getMessage(), ex );
             
         }
-        
         
         return bresult;
         
     }
     
-    public static boolean updateData ( final CDatabaseConnection dataBaseConnection, final TBLPerson tblPerson) {
+    public static boolean updateData ( final CDatabaseConnection dataBaseConnection, final TBLPerson tblPerson, CExtendedLogger localLogger, CLanguage localLanguage ) {
         
- boolean bresult = false;
+        boolean bresult = false;
         
         try{
             
@@ -178,20 +180,18 @@ public class TBLPersonDAO {
               }
               catch ( Exception ex1 ){
               
-                  ex1.printStackTrace();
+                  if ( localLogger != null )  localLogger.logException( "-1021" , ex1.getMessage(), ex1 );
               }
             
-            ex.printStackTrace();
+            if ( localLogger != null )  localLogger.logException( "-1021" , ex.getMessage(), ex );
             
         }
         
-        
         return bresult;
-        
         
     }
     
-    public static List<TBLPerson> searchData( final CDatabaseConnection dataBaseConnection) {
+    public static List<TBLPerson> searchData( final CDatabaseConnection dataBaseConnection, CExtendedLogger localLogger, CLanguage localLanguage ) {
         
         List<TBLPerson> result = new ArrayList<TBLPerson>();
         
@@ -234,10 +234,9 @@ public class TBLPersonDAO {
         }
         catch ( Exception ex ){
            
-            ex.printStackTrace();
+            if ( localLogger != null )  localLogger.logException( "-1021" , ex.getMessage(), ex );
             
         }
-        
                 
         return result;
         

@@ -8,10 +8,10 @@ import java.util.Map;
 import java.util.Set;
 
 import org.test.zk.contants.SystemConstants;
-import org.test.zk.dao.TBLPersonDAO;
 import org.test.zk.database.CDatabaseConnection;
 import org.test.zk.database.CDatabaseConnectionConfig;
-import org.test.zk.datamodel.TBLPerson;
+import org.test.zk.database.dao.PersonDAO;
+import org.test.zk.database.datamodel.TBLPerson;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Session;
@@ -30,6 +30,7 @@ import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
+import commonlibs.commonclasses.CLanguage;
 import commonlibs.extendedlogger.CExtendedLogger;
 
 
@@ -40,6 +41,10 @@ public class CManagerController extends SelectorComposer<Component> {
     protected ListModelList<TBLPerson> dataModel =  null; //new ListModelList<TBLPerson>();
     
     protected CDatabaseConnection databaseConnection;
+    
+    protected CExtendedLogger controllerLogger = null;
+              
+    protected CLanguage controllerLanguage = null;   
     
     public class rendererHelper implements ListitemRenderer<TBLPerson>{
         
@@ -131,6 +136,9 @@ public class CManagerController extends SelectorComposer<Component> {
             
             Session currentSession = Sessions.getCurrent();
             
+            // obtenemos el logger del objeto webApp y guardamos una referencia en la variable de clase controllerLogger 
+            controllerLogger = (CExtendedLogger) Sessions.getCurrent().getWebApp().getAttribute(  SystemConstants._Webapp_Logger_App_Attribute_Key );
+                        
             if ( currentSession.getAttribute( SystemConstants._DB_Connection_Session_Key ) instanceof CDatabaseConnection ) {
                 
                 //Vamos a recuperar la sesion
@@ -165,12 +173,10 @@ public class CManagerController extends SelectorComposer<Component> {
             
             CDatabaseConnectionConfig databaseConnectionConfig = new CDatabaseConnectionConfig();
            
-            // obtenemos el logger del objeto ebApp
-            CExtendedLogger webAppLogger = (CExtendedLogger) Sessions.getCurrent().getWebApp().getAttribute(  SystemConstants._Webapp_Logger_App_Attribute_Key );
+           
+            if (databaseConnectionConfig.loadConfig( strRunningPath + SystemConstants._Database_Connection_Config_File_Name, controllerLogger, controllerLanguage )) {
             
-            if (databaseConnectionConfig.loadConfig( strRunningPath + SystemConstants._Database_Connection_Config_File_Name, webAppLogger, null )) {
-            
-                if ( databaseConnection.makeConnectionToDatabase( databaseConnectionConfig, webAppLogger, null ) ) {
+                if ( databaseConnection.makeConnectionToDatabase( databaseConnectionConfig, controllerLogger, controllerLanguage ) ) {
         
                     //Salvamos la configuracion en el objeto databaseConnection
                     //databaseConnection.setDBConnectionConfig( databaseConnectionConfig, webAppLogger, null );
@@ -246,7 +252,7 @@ public class CManagerController extends SelectorComposer<Component> {
              databaseConnection = ( CDatabaseConnection ) currentSession.getAttribute( SystemConstants._DB_Connection_Session_Key ); //recuperamos la sesion
         
              // para recargar el modelo
-             List<TBLPerson> listData = TBLPersonDAO.searchData( databaseConnection );
+             List<TBLPerson> listData = PersonDAO.searchData( databaseConnection, controllerLogger, controllerLanguage );
              
              // cargamos el Datamodel con la lista que nos retrona la base de datso
              dataModel = new ListModelList<TBLPerson>( listData );
@@ -337,7 +343,7 @@ public class CManagerController extends SelectorComposer<Component> {
                             
                             TBLPerson person = selectedItems.iterator().next();
                                                         
-                            TBLPersonDAO.deletaData( databaseConnection, person.getID() );
+                            PersonDAO.deletaData( databaseConnection, person.getID(), controllerLogger, controllerLanguage );
                             
                             dataModel.remove( person );
                             
