@@ -93,7 +93,7 @@ public class OperatorDAO {
             if ( dataBaseConnection != null && dataBaseConnection.getDBConnection() != null) 
                 try {
                   
-                    dataBaseConnection.getDBConnection().rollback(); // en caso de error vuelve atras
+                    dataBaseConnection.getDBConnection().rollback(); // en caso de error vuelve atras en la DB
                   
                 }
                 catch ( Exception ex1 ){
