@@ -101,7 +101,7 @@ public class OperatorDAO {
                     if ( localLogger != null ) localLogger.logException( "-1021" , ex.getMessage(), ex );
                 }
               
-            if ( localLogger != null )  localLogger.logException( "-1021" , ex.getMessage(), ex );
+            if ( localLogger != null )  localLogger.logException( "-1022" , ex.getMessage(), ex );
               
         }
         
@@ -146,7 +146,7 @@ public class OperatorDAO {
                   if ( localLogger != null )  localLogger.logException( "-1021" , ex1.getMessage(), ex1 );
               }
             
-            if ( localLogger != null )  localLogger.logException( "-1021" , ex.getMessage(), ex );
+            if ( localLogger != null )  localLogger.logException( "-1022" , ex.getMessage(), ex );
             
         }
         
@@ -155,7 +155,7 @@ public class OperatorDAO {
     }
  
     
-    public static boolean updateData ( final CDatabaseConnection dataBaseConnection, final String strId, CExtendedLogger localLogger, CLanguage localLanguage ) {
+    public static boolean updateLastLoginData ( final CDatabaseConnection dataBaseConnection, final String strId, CExtendedLogger localLogger, CLanguage localLanguage ) {
         
         boolean bresult = false;
         
@@ -164,7 +164,7 @@ public class OperatorDAO {
             Statement statement = dataBaseConnection.getDBConnection().createStatement();
             
             // Esto se puede hacer con un ORM como hybermate o mybasty
-            final String SQLstr = "Update tbloperator set  LastLoginAtDate = '" + LocalDate.now().toString() 
+            final String SQLstr = "Update tbloperator set LastLoginAtDate = '" + LocalDate.now().toString() 
                     + "', LastLoginAtTime = '" + LocalTime.now().toString() + "' where id = '" + strId + "'"; 
             
             statement.executeUpdate(SQLstr);
@@ -188,7 +188,7 @@ public class OperatorDAO {
                   if ( localLogger != null )  localLogger.logException( "-1021" , ex1.getMessage(), ex1 );
               }
             
-            if ( localLogger != null )  localLogger.logException( "-1021" , ex.getMessage(), ex );
+            if ( localLogger != null )  localLogger.logException( "-1022" , ex.getMessage(), ex );
             
         }
         
@@ -203,7 +203,7 @@ public class OperatorDAO {
         return result;
     }
     
-    public static boolean updateLastLoginData ( final CDatabaseConnection dataBaseConnection, final TBLOperator tblOperator, CExtendedLogger localLogger, CLanguage localLanguage ) {
+    public static boolean updateData ( final CDatabaseConnection dataBaseConnection, final TBLOperator tblOperator, CExtendedLogger localLogger, CLanguage localLanguage ) {
         
         boolean bresult = false;
         
@@ -241,7 +241,7 @@ public class OperatorDAO {
                   if ( localLogger != null )  localLogger.logException( "-1021" , ex1.getMessage(), ex1 );
               }
             
-            if ( localLogger != null )  localLogger.logException( "-1021" , ex.getMessage(), ex );
+            if ( localLogger != null )  localLogger.logException( "-1022" , ex.getMessage(), ex );
             
         }
         

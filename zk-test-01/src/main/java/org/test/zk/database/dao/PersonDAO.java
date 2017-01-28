@@ -95,7 +95,7 @@ public class PersonDAO {
                     if ( localLogger != null ) localLogger.logException( "-1021" , ex.getMessage(), ex );
                 }
               
-            if ( localLogger != null )  localLogger.logException( "-1021" , ex.getMessage(), ex );
+            if ( localLogger != null )  localLogger.logException( "-1022" , ex.getMessage(), ex );
               
         }
         
@@ -140,7 +140,7 @@ public class PersonDAO {
                   if ( localLogger != null )  localLogger.logException( "-1021" , ex1.getMessage(), ex1 );
               }
             
-            if ( localLogger != null )  localLogger.logException( "-1021" , ex.getMessage(), ex );
+            if ( localLogger != null )  localLogger.logException( "-1022" , ex.getMessage(), ex );
             
         }
         
@@ -183,7 +183,7 @@ public class PersonDAO {
                   if ( localLogger != null )  localLogger.logException( "-1021" , ex1.getMessage(), ex1 );
               }
             
-            if ( localLogger != null )  localLogger.logException( "-1021" , ex.getMessage(), ex );
+            if ( localLogger != null )  localLogger.logException( "-1022" , ex.getMessage(), ex );
             
         }
         

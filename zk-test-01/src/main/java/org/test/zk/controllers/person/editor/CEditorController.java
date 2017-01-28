@@ -144,9 +144,9 @@ public class CEditorController extends SelectorComposer<Component> {
             callerComponent = (Component) execution.getArg().get( "callerComponent" ); 
                  
         }
-        catch ( Exception e ) {
+        catch ( Exception ex ) {
             
-            e.printStackTrace();
+            if ( controllerLogger != null ) controllerLogger.logException( "-1021" , ex.getMessage(), ex );
             
         }
      }

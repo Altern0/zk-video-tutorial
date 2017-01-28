@@ -3,7 +3,7 @@
 <zk>
   <!--   -->
 
-  <window id="windowLogin" apply="" title="Login with your operator name and password" border="normal" hflex="min"> 
+  <window id="windowLogin" apply="org.test.zk.controllers.login.CLoginController" title="Login with your operator name and password" border="normal" hflex="min"> 
 
     <vbox hflex="min" align="center">
 

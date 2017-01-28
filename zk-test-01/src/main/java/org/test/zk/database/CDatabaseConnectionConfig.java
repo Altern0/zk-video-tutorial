@@ -39,7 +39,7 @@ public class CDatabaseConnectionConfig implements  Serializable{
     public boolean loadConfig( String strConfigPath, CExtendedLogger localLogger, CLanguage localLanguage  ){
         
         boolean bresult = false;
-        
+                
         try {
             
             File configFilePath =  new File(strConfigPath); // se covierte la ruta String en una Ruta Abstracta
@@ -49,7 +49,7 @@ public class CDatabaseConnectionConfig implements  Serializable{
                 Properties configsData = new Properties();  // creo la variable para asignar sus propiedades
                 
                 FileInputStream inpuStream = new FileInputStream( configFilePath ); //lee el archivo en la ruta abtracta dada
-                
+        
                 localLogger.logMessage( "1", CLanguage.translateIf( localLanguage, "Readed config values from file [%s]" ,  strConfigPath ));
                 
                 configsData.loadFromXML( inpuStream ); //aqui tomamos el archivo obtenido y lo abromos para poder leer las propiedades

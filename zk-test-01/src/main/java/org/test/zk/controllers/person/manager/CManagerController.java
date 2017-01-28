@@ -38,13 +38,9 @@ public class CManagerController extends SelectorComposer<Component> {
     
     private static final long serialVersionUID = -1591648938821366036L;
     
+    protected CDatabaseConnection databaseConnection = null; 
+    
     protected ListModelList<TBLPerson> dataModel =  null; //new ListModelList<TBLPerson>();
-    
-    protected CDatabaseConnection databaseConnection;
-    
-    protected CExtendedLogger controllerLogger = null;
-              
-    protected CLanguage controllerLanguage = null;   
     
     public class rendererHelper implements ListitemRenderer<TBLPerson>{
         
@@ -102,6 +98,10 @@ public class CManagerController extends SelectorComposer<Component> {
     
     @Wire
     Button buttonModify;
+        
+    protected CExtendedLogger controllerLogger = new CExtendedLogger( null );
+              
+    protected CLanguage controllerLanguage = null;   
     
     @Override
     public void doAfterCompose( Component comp ) {
@@ -160,20 +160,21 @@ public class CManagerController extends SelectorComposer<Component> {
     public void onClickbuttonConnectionToDB ( Event event ){
         
         Session currentSession = Sessions.getCurrent();
-        
        
+         
        // if ( buttonConnectionToDB.getLabel().equalsIgnoreCase( "Connect" ) ){
 
         if  ( databaseConnection == null ) { // al estar persitida por la sesion se puede usar la coneccion como bandera
             
-            databaseConnection = new CDatabaseConnection();
+            
+            databaseConnection = new CDatabaseConnection(); 
+            
+            CDatabaseConnectionConfig databaseConnectionConfig = new CDatabaseConnectionConfig(); 
             
             // em esta linea obtenemos la ruta completa del Archivo de Configuracion de la base de datos inclido el /Config/
-            String strRunningPath = Sessions.getCurrent().getWebApp().getRealPath( SystemConstants._WEB_INF_Dir ) + File.separator + SystemConstants._Config_Dir + File.separator;
+            String strRunningPath = Sessions.getCurrent().getWebApp().getRealPath( SystemConstants._WEB_INF_Dir ) + File.separator + SystemConstants._Config_Dir;
             
-            CDatabaseConnectionConfig databaseConnectionConfig = new CDatabaseConnectionConfig();
-           
-           
+            
             if (databaseConnectionConfig.loadConfig( strRunningPath + SystemConstants._Database_Connection_Config_File_Name, controllerLogger, controllerLanguage )) {
             
                 if ( databaseConnection.makeConnectionToDatabase( databaseConnectionConfig, controllerLogger, controllerLanguage ) ) {
