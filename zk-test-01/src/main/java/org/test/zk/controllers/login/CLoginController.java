@@ -16,6 +16,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Textbox;
 
@@ -39,7 +40,10 @@ public class CLoginController extends SelectorComposer<Component> {
    
    @Wire
    Textbox textboxPassword;
-    
+   
+   @Wire
+   Label labelMessage;
+   
    @Override
    public void doAfterCompose( Component comp ) {
        
@@ -87,6 +91,11 @@ public class CLoginController extends SelectorComposer<Component> {
                        TBLOperator tblOperator = OperatorDAO.checkValid( databaseConnection, strOperator, strPassword, controllerLogger, controllerLanguage );
                        
                        if ( tblOperator != null ) {
+                           
+                           //mensaje de bienvenida
+                           // Esta etiqueta esta configurado el color de la fuente Rojo por el Estilo War, lo vamos a inicializar a negro
+                           labelMessage.setClass( "" );
+                           labelMessage.setValue( "Welcome " + tblOperator.getName() +"!" );
                         
                            // si es valido guardamos la conexion creada y guardamos la identidad del operador
                            currentSession.setAttribute( SystemConstants._DB_Connection_Session_Key, databaseConnection ); 
@@ -106,18 +115,21 @@ public class CLoginController extends SelectorComposer<Component> {
                        }
                        else {
                         
-                           Messagebox.show( "Invalid operator name or password" );  
+                           labelMessage.setValue( "Invalid operator name or password" );
+                           //Messagebox.show( "Invalid operator name or password" );  
                        }
                        
                    }
                    else {
                
-                       Messagebox.show( "Connetion failed" );    
+                       labelMessage.setValue( "Database connetion failed" );
+                       //Messagebox.show( "Connetion failed" );    
                    }
                }
                else {
                    
-                   Messagebox.show( "error to read the config file" );
+                   labelMessage.setValue( "error to read the database config file" );
+                   //Messagebox.show( "error to read the config file" );
                }
            
                
