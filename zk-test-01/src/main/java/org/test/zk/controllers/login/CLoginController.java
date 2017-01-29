@@ -16,8 +16,8 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Label;
-import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Textbox;
 
 import commonlibs.commonclasses.CLanguage;
@@ -50,7 +50,7 @@ public class CLoginController extends SelectorComposer<Component> {
        try {
            
            super.doAfterCompose( comp );
-           
+           labelMessage.setValue( "" );
            // obtenemos el logger del objeto webApp y guardamos una referencia en la variable de clase controllerLogger 
            controllerLogger = (CExtendedLogger) Sessions.getCurrent().getWebApp().getAttribute(  SystemConstants._Webapp_Logger_App_Attribute_Key );
         
@@ -62,6 +62,17 @@ public class CLoginController extends SelectorComposer<Component> {
         
        }
    }
+   
+   
+   // el @listen como se observa puede manejar dos eventos y
+   // luego los piede diferenciar con el event.getTarget().equals( Nombredelobjeto );
+   @Listen( "onChanging=#textboxOperator; onChanging=#textboxPassword ")
+   public void onChanging ( Event event ){
+       //caundo se edite cualquiera de los dos textbox se borra el mensase de error
+       labelMessage.setValue( "" );
+       
+   }
+   
    
    @Listen( "onClick=#buttonLogin")
    public void onClickbuttonLogin ( Event event ){
@@ -144,5 +155,14 @@ public class CLoginController extends SelectorComposer<Component> {
        }
        
    }
+   
+   
+   @Listen( "onTimer=#timerKeepAliveSession")
+   public void onTimer( Event event ){
+       
+       Clients.showNotification( "Automatic renewal of session successful", "info", null, "before_center", 20000, true);
+       
+   }
+    
    
 }

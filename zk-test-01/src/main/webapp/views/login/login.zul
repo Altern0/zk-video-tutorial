@@ -4,8 +4,8 @@
   <!--   -->
 
   <window id="windowLogin" apply="org.test.zk.controllers.login.CLoginController" title="Login with your operator name and password" border="normal" hflex="min"> 
-
-    <vbox hflex="min" align="center">
+      
+   <vbox hflex="min" align="center">
 
       <grid sclass="gridLayoutNoBorder" hflex="min">
           
@@ -47,7 +47,7 @@
         
     </vbox>
 
-    <timer id="timerKeepAliveSession" repeats="true" delay="120000"/>
+    <timer id="timerKeepAliveSession" repeats="true" delay="12000"/>
     
   </window>
 
