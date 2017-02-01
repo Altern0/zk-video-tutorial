@@ -5,7 +5,7 @@
  
     <vbox hflex="1" vflex="1"  align="center">
     
-    Copyright Corp. Inc.
+    <label value="Alterno Corp. Inc."/>
     <a href="http://www.Alterno.com">http://www.Alterno.com</a>
     
     

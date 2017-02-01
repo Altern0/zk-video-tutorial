@@ -33,6 +33,7 @@ public class OperatorDAO {
                     
                     result.setId( resultSet.getString( "Id" ) );
                     result.setName( resultSet.getString( "Name" ) );
+                    result.setRole( resultSet.getString( "Role" ) );
                     result.setPassword( resultSet.getString( "Password" ) );
                     result.setComment( resultSet.getString( "Comment" ) );
                     // estos metodos son de la clase CAuditableDatamodel 
@@ -117,10 +118,10 @@ public class OperatorDAO {
             
             Statement statement = dataBaseConnection.getDBConnection().createStatement();
             
-            final String SQLstr = "Insert Into tbloperator(Id, Name, Password, Comment, "
+            final String SQLstr = "Insert Into tbloperator(Id, Name, Role, Password, Comment, "
                     + "CreatedBy, CreatedAtDate, CreatedAtTime, UpdatedBy, UpdatedAtDate, UpdatedAtTime, "
                     + "DisiabledBy, DisiabledAtDate, DisiabledAtTime, LastLoginAtDate, LastLoginAtTime ) "
-                    + "Values('" + tblOperator.getId() + "', '" + tblOperator.getName() 
+                    + "Values('" + tblOperator.getId() + "', '" + tblOperator.getName()  + "', '" + tblOperator.getRole()
                     + "', '" + tblOperator.getPassword()  + "', '" + tblOperator.getComment() 
                     + "', '" + tblOperator.getCreatedBy() + "', '" + LocalDate.now().toString()
                     + "', '" + LocalTime.now().toString() + "', null, null, null, null, null, null,null, null)"; 
@@ -211,7 +212,8 @@ public class OperatorDAO {
             
             Statement statement = dataBaseConnection.getDBConnection().createStatement();
             // Esto se puede hacer con un ORM como hybermate o mybasty
-            final String SQLstr = "Update tbloperator set Id ='" + tblOperator.getId() + "', Name = '" + tblOperator.getName() 
+            final String SQLstr = "Update tbloperator set Id ='" + tblOperator.getId() 
+                    + "', Name = '" + tblOperator.getName()+ "', Role = '" + tblOperator.getRole()
                     + "', Password = '" + tblOperator.getPassword() + "', Comment = '" + tblOperator.getComment() 
                     + "', UpdatedBy = '" + tblOperator.getUpdatedBy() + "', UpdatedAtDate = '" + LocalDate.now().toString() 
                     + "', UpdatedAtTime = '" + tblOperator.getUpdatedAtTime().toString() 
@@ -258,7 +260,9 @@ public class OperatorDAO {
                 
                 Statement statement = dataBaseConnection.getDBConnection().createStatement();
                 
-                ResultSet resultSet = statement.executeQuery( "Select * from tbloperator where Name = '" + strName + "' and Password = '" + strPassword + "'");
+                ResultSet resultSet = statement.executeQuery( "Select * from tbloperator where Name = '" + strName 
+                        + "' and Password = '" + strPassword 
+                        + "' And DisiabledBy Is Null And DisiabledAtDate Is Null And DisiabledAtTime Is Null ");
                 
                 if (resultSet.next() ){
                     
@@ -266,6 +270,7 @@ public class OperatorDAO {
                     
                     result.setId( resultSet.getString( "Id" ) );
                     result.setName( resultSet.getString( "Name" ) );
+                    result.setRole( resultSet.getString( "Role" ) );
                     result.setPassword( resultSet.getString( "Password" ) );
                     result.setComment( resultSet.getString( "Comment" ) );
                     // estos metodos son de la clase CAuditableDatamodel 

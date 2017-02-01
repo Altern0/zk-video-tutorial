@@ -335,7 +335,7 @@ public class CManagerController extends SelectorComposer<Component> {
                 }
             }  
             
-            Messagebox.show("¿seguro quieres elenimas los " + Integer.toString( selectedItems.size()) + " registros?\n" + strBuffer, "Eliminar", Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION, new org.zkoss.zk.ui.event.EventListener() {
+            Messagebox.show("You are sure delete the next " + Integer.toString( selectedItems.size()) + " records?\n" + strBuffer, "Delete", Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION, new org.zkoss.zk.ui.event.EventListener() {
                 public void onEvent(Event evt) throws InterruptedException {
                     
                     if ( evt.getName().equals( "onOK" ) ) {

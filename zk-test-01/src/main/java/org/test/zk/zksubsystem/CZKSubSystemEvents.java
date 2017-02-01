@@ -1,6 +1,7 @@
 package org.test.zk.zksubsystem;
 
 import java.io.File;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.test.zk.contants.SystemConstants;
@@ -116,13 +117,29 @@ public class CZKSubSystemEvents implements  DesktopInit, DesktopCleanup, Session
         
     }
 
+
     @Override
     public void cleanup( Session session ) throws Exception {
         
         System.out.println( "cleanup session" );
         
+        //aqui debemos Limpiar logger que estan en la session del operado que invoco session.getcurrent().invalidate().
+        
+        @SuppressWarnings( "unchecked" )
+        LinkedList<String> loggedSessionLoggers = (LinkedList<String>) session.getAttribute( SystemConstants._Logged_Session_Loggers );
+        
+        for ( String strLoggername : loggedSessionLoggers) {
+            
+            CExtendedLogger currentLogger = CExtendedLogger.getLogger( strLoggername );
+            
+            currentLogger.flushAndClose(); //cierro cada logger
+            
+        }
+        
+        loggedSessionLoggers.clear(); // vacio la lista
+    
     }
-
+    
     @Override
     public void init( Session session, Object object ) throws Exception {
         

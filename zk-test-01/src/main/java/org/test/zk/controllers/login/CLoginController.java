@@ -1,7 +1,8 @@
 package org.test.zk.controllers.login;
 
 import java.io.File;
-import java.time.LocalDate;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.test.zk.contants.SystemConstants;
 import org.test.zk.database.CDatabaseConnection;
@@ -21,7 +22,9 @@ import org.zkoss.zul.Label;
 import org.zkoss.zul.Textbox;
 
 import commonlibs.commonclasses.CLanguage;
+import commonlibs.commonclasses.ConstantsCommonClasses;
 import commonlibs.extendedlogger.CExtendedLogger;
+import commonlibs.utils.Utilities;
 import commonlibs.utils.ZKUtilities;
 
 
@@ -50,7 +53,9 @@ public class CLoginController extends SelectorComposer<Component> {
        try {
            
            super.doAfterCompose( comp );
-           labelMessage.setValue( "" );
+           
+           labelMessage.setValue( "" ); //inicializo el mensaje para que elimine el espacio que ocupa
+           
            // obtenemos el logger del objeto webApp y guardamos una referencia en la variable de clase controllerLogger 
            controllerLogger = (CExtendedLogger) Sessions.getCurrent().getWebApp().getAttribute(  SystemConstants._Webapp_Logger_App_Attribute_Key );
         
@@ -68,6 +73,7 @@ public class CLoginController extends SelectorComposer<Component> {
    // luego los piede diferenciar con el event.getTarget().equals( Nombredelobjeto );
    @Listen( "onChanging=#textboxOperator; onChanging=#textboxPassword ")
    public void onChanging ( Event event ){
+       
        //caundo se edite cualquiera de los dos textbox se borra el mensase de error
        labelMessage.setValue( "" );
        
@@ -92,10 +98,10 @@ public class CLoginController extends SelectorComposer<Component> {
                CDatabaseConnectionConfig databaseConnectionConfig = new CDatabaseConnectionConfig(); 
                
                 // em esta linea obtenemos la ruta completa del Archivo de Configuracion de la base de datos inclido el /Config/
-               String strRunningPath = Sessions.getCurrent().getWebApp().getRealPath( SystemConstants._WEB_INF_Dir ) + File.separator + SystemConstants._Config_Dir;
+               String strRunningPath = Sessions.getCurrent().getWebApp().getRealPath( SystemConstants._WEB_INF_Dir );
                
                
-               if (databaseConnectionConfig.loadConfig( strRunningPath + SystemConstants._Database_Connection_Config_File_Name, controllerLogger, controllerLanguage )) {
+               if (databaseConnectionConfig.loadConfig( strRunningPath + File.separator + SystemConstants._Config_Dir + SystemConstants._Database_Connection_Config_File_Name, controllerLogger, controllerLanguage )) {
           
                    if ( databaseConnection.makeConnectionToDatabase( databaseConnectionConfig, controllerLogger, controllerLanguage ) ) {
            
@@ -115,8 +121,32 @@ public class CLoginController extends SelectorComposer<Component> {
                            currentSession.setAttribute( SystemConstants._Operator_Credential_Session_Key, tblOperator );
                            
                            // Salvamos la fecha y hora de la sesion 
-                           currentSession.setAttribute( SystemConstants._Login_Date_Time_Session_Key, LocalDate.now().toString() );
+                           //currentSession.setAttribute( SystemConstants._Login_Date_Time_Session_Key, LocalDate.now().toString() );
+
+                           controllerLogger.logMessage( "1" , CLanguage.translateIf( controllerLanguage, "Saved user credential in session for user [%s]", tblOperator.getName() ) );
+
+                           //Obtenemos la fecha y la hora en el formato yyyy-MM-dd-HH-mm-ss
+                           String strDateTime = Utilities.getDateInFormat( ConstantsCommonClasses._Global_Date_Time_Format_File_System_24, null );
                            
+                           //Creamos la variable del logpath
+                           String strLogPath = strRunningPath + SystemConstants._Logs_Dir + strOperator + File.separator + strDateTime + File.separator;
+                           
+                           //La guardamos en la sesion
+                           currentSession.setAttribute( SystemConstants._Log_Path_Session_Key, strLogPath );
+
+                           controllerLogger.logMessage( "1" , CLanguage.translateIf( controllerLanguage, "Saved user log path [%s] in session for user [%s]", strLogPath, strOperator ) );
+                           
+                           //Guardamos la fecha y la hora del inicio de sesión
+                           currentSession.setAttribute( SystemConstants._Login_Date_Time_Session_Key, strDateTime );
+                           
+                           controllerLogger.logMessage( "1" , CLanguage.translateIf( controllerLanguage, "Saved user login date time [%s] in session for user [%s]", strDateTime, strOperator ) );
+                           
+                           //Creamos la lista de logger de esta sesion
+                           List<String> loggedSessionLoggers = new LinkedList<String>();
+                           
+                           //Guardamos la lista vacia en la sesion
+                           currentSession.setAttribute( SystemConstants._Logged_Session_Loggers, loggedSessionLoggers );
+                        
                            // Actualizamos en la DB la Ultima Sesion
                            OperatorDAO.updateLastLoginData( databaseConnection, tblOperator.getId(), controllerLogger, controllerLanguage );
                            

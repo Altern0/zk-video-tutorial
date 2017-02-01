@@ -10,6 +10,7 @@ public class TBLOperator extends CAuditableDataModel implements Serializable  {
  
     protected String strId;
     protected String strName;
+    protected String strRole;
     protected String strPassword;
     protected String strComment;  
     protected String strDisiabledBy;
@@ -18,10 +19,11 @@ public class TBLOperator extends CAuditableDataModel implements Serializable  {
     protected LocalDate lastLoginAtDate;
     protected LocalTime lastLoginAtTime;
     
-    public TBLOperator ( String strId, String strName, String strPassword, String strComment, String strDisiabledBy, LocalDate disiabledAtDate, LocalTime disiabledAtTime, LocalDate lastLoginAtDate, LocalTime lastLoginAtTime) {
+    public TBLOperator ( String strId, String strName, String strRole, String strPassword, String strComment, String strDisiabledBy, LocalDate disiabledAtDate, LocalTime disiabledAtTime, LocalDate lastLoginAtDate, LocalTime lastLoginAtTime) {
        
         this.strId= strId;
         this.strName = strName;
+        this.strRole = strRole;
         this.strPassword = strPassword;
         this.strComment = strComment;  
         this.strDisiabledBy = strDisiabledBy;
@@ -59,7 +61,17 @@ public class TBLOperator extends CAuditableDataModel implements Serializable  {
         
         this.strName = strName;
     }
+    
+    public String getRole() {
+        
+        return strRole;
+    }
 
+    
+    public void setRole( String strRole ) {
+        
+        this.strRole = strRole;
+    }
     
     public String getPassword() {
         
@@ -143,5 +155,6 @@ public class TBLOperator extends CAuditableDataModel implements Serializable  {
         
         this.lastLoginAtTime = lastLoginAtTime;
     }
-    
+
+ 
 }
