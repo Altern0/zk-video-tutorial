@@ -79,6 +79,12 @@
       <artifactId>httpclient</artifactId>
       <version>4.5.2</version>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/org.zkoss.zkforge/gmapsz -->
+    <dependency>
+      <groupId>org.zkoss.zkforge</groupId>
+      <artifactId>gmapsz</artifactId>
+      <version>3.0.4</version>
+    </dependency>
   </dependencies>
   <build>
     <finalName>${project.artifactId}</finalName>
