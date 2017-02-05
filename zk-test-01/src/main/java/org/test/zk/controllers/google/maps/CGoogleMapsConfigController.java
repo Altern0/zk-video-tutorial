@@ -33,7 +33,8 @@ public class CGoogleMapsConfigController extends SelectorComposer<Component> {
     
     @Override
     public void doAfterCompose(Component comp) throws Exception {
-        super.doAfterCompose(comp);
+     
+       super.doAfterCompose(comp);
      
        latitude.setValue(gmaps.getLat());
        longitude.setValue(gmaps.getLng());
@@ -43,34 +44,49 @@ public class CGoogleMapsConfigController extends SelectorComposer<Component> {
      
     @Listen("onChange = #latitude, #longitude" )
     public void onPositionChange() {
+       
         gmaps.panTo(latitude.getValue(), longitude.getValue());
+    
     }
      
     @Listen("onChange = #zoom" )
     public void onZoomChange() {
+    
         gmaps.setZoom(zoom.getValue());
+    
     }
  
     @Listen("onClick = #toggleInfo") 
     public void onToggleInfo() {
+        
         if (info.isOpen()) {
+        
             marker.setOpen(true);
             info.setOpen(false);
-        } else {
+            
+        } 
+        else {
+        
             marker.setOpen(false);
             info.setOpen(true);
+        
         }
+        
     }   
      
     @Listen("onMapMove = #gmaps") 
     public void onMapMove() {
+        
         latitude.setValue(gmaps.getLat());
         longitude.setValue(gmaps.getLng());
+    
     }   
  
     @Listen("onMapZoom = #gmaps") 
     public void onMapZoom() {
+    
         zoom.setValue(gmaps.getZoom());
+    
     }   
     
 }

@@ -15,6 +15,7 @@ public class CGoogleMapsController extends SelectorComposer<Component> {
     
     @Override
     public void doAfterCompose(Component comp) throws Exception {
+    
         super.doAfterCompose(comp);
          
         Executions.createComponents("/views/google/google.maps.ctrl.zul", null, null);
@@ -24,10 +25,15 @@ public class CGoogleMapsController extends SelectorComposer<Component> {
         
     @Listen("onMapClick = #gmaps")
     public void onMapClick(MapMouseEvent event) {
+
         Gmarker gmarker = event.getGmarker();
+        
         if (gmarker != null) {
+        
             gmarker.setOpen(true);
+        
         }
+    
     }
 
 }
