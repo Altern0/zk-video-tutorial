@@ -80,7 +80,7 @@ public class CLoginController extends SelectorComposer<Component> {
    }
    
    
-   @Listen( "onClick=#buttonLogin")
+   @Listen( "onClick=#buttonLogin; onOK=#windowLogin")
    public void onClickbuttonLogin ( Event event ){
        
        Session currentSession = Sessions.getCurrent();
@@ -129,7 +129,7 @@ public class CLoginController extends SelectorComposer<Component> {
                            String strDateTime = Utilities.getDateInFormat( ConstantsCommonClasses._Global_Date_Time_Format_File_System_24, null );
                            
                            //Creamos la variable del logpath
-                           String strLogPath = strRunningPath + SystemConstants._Logs_Dir + strOperator + File.separator + strDateTime + File.separator;
+                           String strLogPath = strRunningPath + File.separator + SystemConstants._Logs_Dir + strOperator + File.separator + strDateTime + File.separator;
                            
                            //La guardamos en la sesion
                            currentSession.setAttribute( SystemConstants._Log_Path_Session_Key, strLogPath );

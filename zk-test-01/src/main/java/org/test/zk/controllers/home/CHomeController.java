@@ -2,7 +2,10 @@ package org.test.zk.controllers.home;
 
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
+
 import org.test.zk.contants.SystemConstants;
 import org.test.zk.database.datamodel.TBLOperator;
 import org.test.zk.utilities.SystemUtilities;
@@ -18,6 +21,7 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Tabbox;
+import org.zkoss.zul.Window;
 
 import commonlibs.commonclasses.CLanguage;
 import commonlibs.commonclasses.ConstantsCommonClasses;
@@ -33,7 +37,7 @@ public class CHomeController extends SelectorComposer<Component> {
     protected CExtendedLogger controllerLogger = null;
     
     protected CLanguage controllerLanguage = null;
-        
+  
     //Lo mismo para que la variable haga bien el binding se necestan los dos id
     @Wire( "#includeNorthContent #labelHeader" )
     Label labelHeader;
@@ -43,7 +47,7 @@ public class CHomeController extends SelectorComposer<Component> {
     
     @Wire
     Button buttonLogout;
-    
+   
     public void initcontrollerLoggerAndcontrollerLanguage  ( String strRunningPath, Session currentSession ) {
         
         //Leemos la configuración del logger del archivo o de la sesión
@@ -127,7 +131,8 @@ public class CHomeController extends SelectorComposer<Component> {
             
             super.doAfterCompose( comp );
          
-            String strRunningPath = Sessions.getCurrent().getWebApp().getRealPath( SystemConstants._WEB_INF_Dir ) + File.separator + SystemConstants._Config_Dir + File.separator;
+         // obtenemos la direccion del archivo de configuracion de los logger
+            final String strRunningPath = Sessions.getCurrent().getWebApp().getRealPath( SystemConstants._WEB_INF_Dir ) + File.separator + SystemConstants._Config_Dir + File.separator;
             
             //Inicializacmos el Logger y el Lenguaje
             initcontrollerLoggerAndcontrollerLanguage( strRunningPath, Sessions.getCurrent() );
@@ -139,26 +144,66 @@ public class CHomeController extends SelectorComposer<Component> {
          
         }
     }
+
+    @Listen( "onClick= #includeNorthContent #buttonChangePassword")
+    public void onClickbuttonChangePassword ( Event event ){
+        
+        if ( controllerLogger != null ) 
+            controllerLogger.logMessage( "1" , CLanguage.translateIf( controllerLanguage, "Button change password clicked" ) );
+            
+    }
+     
+    
     
     @SuppressWarnings( { "rawtypes", "unchecked" } )
     @Listen( "onClick= #includeNorthContent #buttonLogout")
     public void onClickbuttonLogout ( Event event ){
        
-        Messagebox.show( "You are sure do you want logout from System ?", "Logout", Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION, new org.zkoss.zk.ui.event.EventListener() {
-            public void onEvent(Event evt) throws InterruptedException {
-                
-                if ( evt.getName().equals( "onOK" ) ) {
-                    
-                    //aqui obliga a limpiar la sesion es mejor que ir en reoveAtribute en removeAtrivute
-                    Sessions.getCurrent().invalidate();
+        if ( controllerLogger != null ) 
+            controllerLogger.logMessage( "1" , CLanguage.translateIf( controllerLanguage, "Button logout clicked" ) );
             
-                    Executions.sendRedirect( "/index.zul" ); //Lo enviamos al index.zul
-                }
-            }
-      
-        });
+        Messagebox.show( "You are sure do you want logout from System ?", "Logout", Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION, new org.zkoss.zk.ui.event.EventListener() {
+           public void onEvent(Event evt) throws InterruptedException {
+                
+              if ( evt.getName().equals( "onOK" ) ) {
+                    
+                  if ( controllerLogger != null ) 
+                        controllerLogger.logMessage( "1" , CLanguage.translateIf( controllerLanguage, "Logout confirm accepted" ) );
+                    
+                  //aqui obliga a limpiar la sesion es mejor que ir en reoveAtribute en removeAtrivute
+                  Sessions.getCurrent().invalidate();
+            
+                  Executions.sendRedirect( "/index.zul" ); //Lo enviamos al index.zul
+                    
+              }
+              else {
+                  
+                  if ( controllerLogger != null ) 
+                      controllerLogger.logMessage( "1" , CLanguage.translateIf( controllerLanguage, "Logout confirm cancel" ) );
+                
+              }
+                
+           }
+         });
+           
+    
     }
- 
-
+    
+    @Listen( "onClick= #buttonPersonManager" )
+    public void onClickbuttonPersonManager ( Event event ){
+        
+        if ( controllerLogger != null )            
+            controllerLogger.logMessage( "1" , CLanguage.translateIf( controllerLanguage, "Button person manager clicked" ) );
+            
+        // paso de parametros a la ventana dialog
+        
+        Map<String,Object> params = new HashMap<String,Object>();
+        params.put( "callerComponent", event.getTarget() ); 
+        
+        Window win = ( Window ) Executions.createComponents("/views/person/manager/manager.zul", null, params);
+        
+        win.doModal();
+        
+    }
     
 }

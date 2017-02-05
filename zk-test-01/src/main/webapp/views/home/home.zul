@@ -13,6 +13,7 @@
     
     <center id="mainContent" autoscroll="true" border="none" >
             
+       <button id="buttonPersonManager" label="Person Manager" />
       
     </center>
     

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<logs>
+<logMark Type="Init" Date="05/02/2017" Time="16:42:18"/>
+<Log InstanceID="Alterno 2017-02-05-16-42-08" LogType="Error" Level="INFO" Date="05/02/2017" Time="16:42:18" LoggerName="home_controller Alterno 2017-02-05-16-42-08" Sequence="1" ThreadID="21" ThreadName="qtp688722159-21" PackageName="commonlibs.commonclasses" ClassName="CLanguage" MethodName="setLanguageFileName" Line="134" Code="-1002" Message="The language file in the path [C:\Users\AL\git\zk-video-tutorial\zk-test-01\src\main\webapp\WEB-INF\config\langs\home_controller.init.lang.xml] not exists"/>
