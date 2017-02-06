@@ -13,8 +13,22 @@
     
     <center id="mainContent" autoscroll="true" border="none" >
             
-       <button id="buttonPersonManager" label="Person Manager" />
+       <tabbox id="tabboxMainContent" width="100%" height="100%">
       
+          <tabs id="tabboxTaps">
+        
+        
+        
+          </tabs>
+        
+          <tabpanels id="tabboxPanels">
+        
+        
+        
+          </tabpanels>
+      
+       </tabbox>      
+   
     </center>
     
     <south id="southContent" height="50px" border="none">

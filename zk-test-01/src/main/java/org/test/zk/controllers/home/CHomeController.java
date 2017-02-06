@@ -2,9 +2,7 @@ package org.test.zk.controllers.home;
 
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Map;
 
 import org.test.zk.contants.SystemConstants;
 import org.test.zk.database.datamodel.TBLOperator;
@@ -17,17 +15,20 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Tab;
 import org.zkoss.zul.Tabbox;
-import org.zkoss.zul.Window;
+import org.zkoss.zul.Tabpanel;
 
 import commonlibs.commonclasses.CLanguage;
 import commonlibs.commonclasses.ConstantsCommonClasses;
 import commonlibs.extendedlogger.CExtendedConfigLogger;
 import commonlibs.extendedlogger.CExtendedLogger;
 import commonlibs.utils.Utilities;
+import commonlibs.utils.ZKUtilities;
 
 
 public class CHomeController extends SelectorComposer<Component> {
@@ -123,6 +124,103 @@ public class CHomeController extends SelectorComposer<Component> {
     
     }
 
+    
+    public void initView() {
+        
+        TBLOperator tblOperador = (TBLOperator) Sessions.getCurrent().getAttribute( SystemConstants._Operator_Credential_Session_Key );
+        
+        if ( tblOperador != null ) {
+            
+            if ( labelHeader != null ) {
+             
+                labelHeader.setValue( tblOperador.getRole() );
+                
+            }
+        }
+        
+        //aqui iniciamos los tab de manera dinamica
+        
+        // el home se muestra a todos
+        // creaos el componente a partir del Zul un arreglo con los dos componentes raiz
+        Component[] components =  Executions.getCurrent().createComponents( "/views/tabs/home/tabhome.zul", null );
+        
+        // buscamos el componente de tipo tab esta rutina es un simple siclo de busqueda 
+        Tab tab = (Tab) ZKUtilities.getComponent( components, "Tab" );
+        
+        if ( tab != null ) {
+            
+            // asignamos tab encontrado de modo dinamico al tabbox
+            tabboxMainContent.getTabs().appendChild( tab );
+            
+            // buscamos el componente de tipo tabpanel 
+            Tabpanel tabPanel = (Tabpanel) ZKUtilities.getComponent( components, "Tabpanel" );
+            
+            if ( tabPanel != null ) {
+                
+                // asignamos el tabpanel encontrado de modo dinamico al tabbox
+                tabboxMainContent.getTabpanels().appendChild( tabPanel );
+            }
+        }
+        
+     
+        if ( tblOperador.getRole().equalsIgnoreCase( "admin" ) ) {
+            
+            // creaos el componente a partir del Zul un arreglo con los dos componentes raiz
+            components =  Executions.getCurrent().createComponents( "/views/tabs/admin/tabadmin.zul", null );
+            
+            // buscamos el componente de tipo tab esta rutina es un simple siclo de busqueda 
+            tab = (Tab) ZKUtilities.getComponent( components, "Tab" );
+            
+            if ( tab != null ) {
+                
+                // asignamos tab encontrado de modo dinamico al tabbox
+                tabboxMainContent.getTabs().appendChild( tab );
+                
+                // buscamos el componente de tipo tabpanel 
+                Tabpanel tabPanel = (Tabpanel) ZKUtilities.getComponent( components, "Tabpanel" );
+                
+                if ( tabPanel != null ) {
+                    
+                    // asignamos el tabpanel encontrado de modo dinamico al tabbox
+                    tabboxMainContent.getTabpanels().appendChild( tabPanel );
+            
+                }
+            
+            }
+
+        }
+        else if ( tblOperador.getRole().equalsIgnoreCase( "operator.type1" ) ) {
+            
+        } 
+        else if ( tblOperador.getRole().equalsIgnoreCase( "operator.type2" ) ) {
+            
+        }
+        
+        // creaos el componente a partir del Zul un arreglo con los dos componentes raiz
+        components =  Executions.getCurrent().createComponents( "/views/tabs/googlemap/tabgooglemap.zul", null );
+        
+        // buscamos el componente de tipo tab esta rutina es un simple siclo de busqueda 
+        tab = (Tab) ZKUtilities.getComponent( components, "Tab" );
+        
+        if ( tab != null ) {
+            
+            // asignamos tab encontrado de modo dinamico al tabbox
+            tabboxMainContent.getTabs().appendChild( tab );
+            
+            // buscamos el componente de tipo tabpanel 
+            Tabpanel tabPanel = (Tabpanel) ZKUtilities.getComponent( components, "Tabpanel" );
+            
+            if ( tabPanel != null ) {
+                
+                // asignamos el tabpanel encontrado de modo dinamico al tabbox
+                tabboxMainContent.getTabpanels().appendChild( tabPanel );
+        
+            }
+        
+        }
+        
+    }
+    
 
     @Override
     public void doAfterCompose( Component comp ) {
@@ -136,6 +234,8 @@ public class CHomeController extends SelectorComposer<Component> {
             
             //Inicializacmos el Logger y el Lenguaje
             initcontrollerLoggerAndcontrollerLanguage( strRunningPath, Sessions.getCurrent() );
+            
+            initView();
             
         }
         catch ( Exception ex ) {
@@ -188,21 +288,15 @@ public class CHomeController extends SelectorComposer<Component> {
            
     
     }
-    
-    @Listen( "onClick= #buttonPersonManager" )
-    public void onClickbuttonPersonManager ( Event event ){
+  
+
+    @Listen( "onTimer=#includeNorthContent #timerKeepAliveSession")
+    public void onTimer( Event event ){
         
-        if ( controllerLogger != null )            
-            controllerLogger.logMessage( "1" , CLanguage.translateIf( controllerLanguage, "Button person manager clicked" ) );
-            
-        // paso de parametros a la ventana dialog
+        // este evvento se ejecuta cada lapso de tiempo que le indiquemos en milisegundos
         
-        Map<String,Object> params = new HashMap<String,Object>();
-        params.put( "callerComponent", event.getTarget() ); 
-        
-        Window win = ( Window ) Executions.createComponents("/views/person/manager/manager.zul", null, params);
-        
-        win.doModal();
+        // muetra una notificacion
+        Clients.showNotification( "Automatic renewal of session successful", "info", null, "before_center", 20000, true);
         
     }
     

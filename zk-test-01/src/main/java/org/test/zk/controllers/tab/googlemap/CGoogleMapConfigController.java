@@ -1,4 +1,4 @@
-package org.test.zk.controllers.google.maps;
+package org.test.zk.controllers.tab.googlemap;
 
 import org.zkoss.gmaps.Ginfo;
 import org.zkoss.gmaps.Gmaps;
@@ -13,7 +13,7 @@ import org.zkoss.zul.Intbox;
 
 
 @SuppressWarnings( "serial" )
-public class CGoogleMapsConfigController extends SelectorComposer<Component> {
+public class CGoogleMapConfigController extends SelectorComposer<Component> {
 
     @Wire
     private Gmaps gmaps;
@@ -36,6 +36,8 @@ public class CGoogleMapsConfigController extends SelectorComposer<Component> {
      
        super.doAfterCompose(comp);
      
+       gmaps.setLat( 10.974586 );
+       gmaps.setLng( -63.870997 );
        latitude.setValue(gmaps.getLat());
        longitude.setValue(gmaps.getLng());
        zoom.setValue(gmaps.getZoom());

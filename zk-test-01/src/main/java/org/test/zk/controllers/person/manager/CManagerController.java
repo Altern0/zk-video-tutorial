@@ -10,7 +10,6 @@ import java.util.Set;
 
 import org.test.zk.contants.SystemConstants;
 import org.test.zk.database.CDatabaseConnection;
-import org.test.zk.database.CDatabaseConnectionConfig;
 import org.test.zk.database.dao.PersonDAO;
 import org.test.zk.database.datamodel.TBLOperator;
 import org.test.zk.database.datamodel.TBLPerson;

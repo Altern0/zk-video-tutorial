@@ -1,0 +1,87 @@
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c" ?>
+<?init class="org.test.zk.security.CCheckAuthenticated" ?>
+<zk>
+  <tab id="tabGoogleMap" label="Google Map" />
+  
+  <script type="text/javascript" content="zk.googleAPIkey='AIzaSyCHfkSwNhyxqSzFLxImtjksCovuUZJJYoM';"/>
+  
+  <tabpanel id="tabGoogleMapPanels" >
+  
+     <panel apply="org.test.zk.controllers.tab.googlemap.CGoogleMapController">
+  
+        <panelchildren> 
+  
+           <gmaps version="3.26" id="gmaps" width="520px" height="400px" showSmallCtrl="true" protocol="https">
+ 
+             <ginfo id="info" open="true" lat="10.974860" lng="-63.870734"
+                 content="Residential Complex Valle Arriba"/>
+  
+             <gmarker id="marker" lat="10.974586" lng="-63.870997"
+                 content="Elysium st operations center."/>
+ 
+           </gmaps>
+ 
+        </panelchildren>
+        
+      </panel>
+      
+      
+      <style>
+        .z-panel-hm .z-panel-header, .z-panel-head,.z-panel-tl, .z-panel-tr, .z-panel-tl-gray, .z-panel-tr-gray, .z-panel-bl, .z-panel-br, .z-panel-hl, .z-panel-hr {
+
+            background: #000000;
+            color:#FFFFF
+
+        }
+      </style>
+      
+      <panel width="521px" collapsible="true" title="Config" apply="org.test.zk.controllers.tab.googlemap.CGoogleMapConfigController"  >
+  
+        <panelchildren> 
+  
+            <grid width="520px">
+               <rows>
+  
+                  <row>
+  
+                      <label value="Latitude:" />
+  
+                      <doublebox id="latitude" hflex="1" />
+  
+                  </row>
+    
+                  <row>
+  
+                      <label value="Longitude:" /> 
+  
+                     <doublebox id="longitude" hflex="1" />
+    
+                  </row>
+    
+                  <row>
+  
+                      <label value="Zoom Level:" /> 
+  
+                      <intbox id="zoom" hflex="1" />
+  
+                  </row>
+  
+                  <row>
+  
+                      <label value="Open Info:" />
+  
+                      <button id="toggleInfo" label="Toggle Info" hflex="1" />
+  
+                  </row>
+  
+              </rows>
+  
+          </grid> 
+      
+      </panelchildren>
+   
+   </panel>
+   
+ </tabpanel>
+
+</zk>  
